@@ -24,6 +24,7 @@ public class LoginActivity extends Activity {
 
     private void init() {
         this.pieChart = (PieChart) findViewById(R.id.piechart);
+
         loadData();
         this.pieChart.startAnimation();
     }

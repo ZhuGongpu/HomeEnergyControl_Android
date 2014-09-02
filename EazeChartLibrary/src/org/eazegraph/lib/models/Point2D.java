@@ -22,6 +22,9 @@ package org.eazegraph.lib.models;
  */
 public class Point2D {
 
+    private float mX;
+    private float mY;
+
     public Point2D(float _x, float _y) {
         mX = _x;
         mY = _y;
@@ -49,7 +52,4 @@ public class Point2D {
     public float[] getFloatArray() {
         return new float[]{mX, mY};
     }
-
-    private float mX;
-    private float mY;
 }

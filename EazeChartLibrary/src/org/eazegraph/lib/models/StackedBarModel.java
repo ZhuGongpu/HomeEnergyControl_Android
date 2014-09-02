@@ -28,6 +28,11 @@ import java.util.List;
  */
 public class StackedBarModel extends BaseModel {
 
+    /**
+     * Bars which are in the StackedBar.
+     */
+    List<BarModel> mBars;
+
     public StackedBarModel() {
         super("Unset");
         mBars = new ArrayList<BarModel>();
@@ -62,7 +67,7 @@ public class StackedBarModel extends BaseModel {
 
     public RectF getBounds() {
         RectF bounds = new RectF();
-        if(!mBars.isEmpty()) {
+        if (!mBars.isEmpty()) {
             // get bounds from complete StackedBar
             bounds.set(
                     mBars.get(0).getBarBounds().left,
@@ -73,9 +78,4 @@ public class StackedBarModel extends BaseModel {
         }
         return bounds;
     }
-
-    /**
-     * Bars which are in the StackedBar.
-     */
-    List<BarModel> mBars;
 }

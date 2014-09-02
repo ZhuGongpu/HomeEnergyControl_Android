@@ -99,8 +99,8 @@ public class PieChart extends BaseChart {
     private static final String LOG_TAG = PieChart.class.getSimpleName();
     private List<PieModel> mPieData;
     private Paint mGraphPaint;
-    private Paint mLegendPaint;//TODO 圆环下面的字,alpha调为0后即消失
-    private Paint mValuePaint;
+
+    private Paint mValuePaint;//TODO 用于显示圈内内容
     private RectF mGraphBounds;
     private RectF mInnerBounds;
     private RectF mInnerOutlineBounds;
@@ -138,7 +138,6 @@ public class PieChart extends BaseChart {
     private int mCurrentItem = 0;
     private ObjectAnimator mAutoCenterAnimator;
     private Scroller mScroller;
-
 
     // ---------------------------------------------------------------------------------------------
     //                          Override methods from view layers
@@ -679,10 +678,6 @@ public class PieChart extends BaseChart {
         mTotalValue = 0;
 
         mGraphPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mLegendPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mLegendPaint.setTextSize(mLegendTextSize);
-        mLegendPaint.setColor(DEF_LEGEND_COLOR);
-        mLegendPaint.setStyle(Paint.Style.FILL);
 
         mValuePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mValuePaint.setTextSize(mValueTextSize);
@@ -1003,7 +998,7 @@ public class PieChart extends BaseChart {
                     mInnerValueString += " " + mInnerValueUnit;
                 }
             }
-
+            //TODO 修改布局
             mValuePaint.getTextBounds(mInnerValueString, 0, mInnerValueString.length(), mValueTextBounds);
             _Canvas.drawText(
                     mInnerValueString,
@@ -1017,33 +1012,6 @@ public class PieChart extends BaseChart {
     @Override
     protected void onLegendDraw(Canvas _Canvas) {
         super.onLegendDraw(_Canvas);
-
-        _Canvas.drawPath(mTriangle, mLegendPaint);
-
-        float height = mMaxFontHeight = Utils.calculateMaxTextHeight(mLegendPaint);
-
-        if (!mPieData.isEmpty()) {
-            PieModel model = mPieData.get(mCurrentItem);
-
-            // center text in view
-            // TODO: move the boundary calculation out of onDraw
-            mLegendPaint.getTextBounds(model.getLegendLabel(), 0, model.getLegendLabel().length(), mTextBounds);
-            _Canvas.drawText(
-                    model.getLegendLabel(),
-                    (mLegendWidth / 2) - (mTextBounds.width() / 2),
-                    mIndicatorSize * 2 + mIndicatorBottomMargin + mIndicatorTopMargin + height,
-                    mLegendPaint
-            );
-        } else {
-            String str = "No Data available";
-            mLegendPaint.getTextBounds(str, 0, str.length(), mTextBounds);
-            _Canvas.drawText(
-                    str,
-                    (mLegendWidth / 2) - (mTextBounds.width() / 2),
-                    mIndicatorSize * 2 + mIndicatorBottomMargin + mIndicatorTopMargin + height,
-                    mLegendPaint
-            );
-        }
     }
 
     @Override

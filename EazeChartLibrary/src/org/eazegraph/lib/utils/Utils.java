@@ -24,7 +24,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
 import android.view.View;
-
 import org.eazegraph.lib.models.BaseModel;
 import org.eazegraph.lib.models.Point2D;
 
@@ -35,11 +34,12 @@ import java.util.List;
  */
 public class Utils {
 
+    private static final String LOG_TAG = Utils.class.getSimpleName();
+
     /**
      * Converts density-independent pixel (dp) to pixel (px)
      *
      * @param _Dp the dp value to convert in pixel
-     *
      * @return the converted value in pixels
      */
     public static float dpToPx(float _Dp) {
@@ -49,10 +49,11 @@ public class Utils {
     /**
      * Calculates the middle point between two points and multiplies its coordinates with the given
      * smoothness _Mulitplier.
-     * @param _P1           First point
-     * @param _P2           Second point
-     * @param _Result       Resulting point
-     * @param _Multiplier   Smoothness multiplier
+     *
+     * @param _P1         First point
+     * @param _P2         Second point
+     * @param _Result     Resulting point
+     * @param _Multiplier Smoothness multiplier
      */
     public static void calculatePointDiff(Point2D _P1, Point2D _P2, Point2D _Result, float _Multiplier) {
         float diffX = _P2.getX() - _P1.getX();
@@ -87,9 +88,10 @@ public class Utils {
 
     /**
      * Calculates the legend positions and which legend title should be displayed or not.
-     *
+     * <p/>
      * Important: the LegendBounds in the _Models should be set and correctly calculated before this
      * function is called!
+     *
      * @param _Models The graph data which should have the BaseModel class as parent class.
      * @param _StartX Left starting point on the screen. Should be the absolute pixel value!
      * @param _Paint  The correctly set Paint which will be used for the text painting in the later process
@@ -140,21 +142,22 @@ public class Utils {
 
     /**
      * Returns an string with or without the decimal places.
-     * @param _value        The value which should be converted
-     * @param _showDecimal  Indicates whether the decimal numbers should be shown or not
-     * @return              A generated string of the value.
+     *
+     * @param _value       The value which should be converted
+     * @param _showDecimal Indicates whether the decimal numbers should be shown or not
+     * @return A generated string of the value.
      */
     public static String getFloatString(float _value, boolean _showDecimal) {
         if (_showDecimal) {
-            return _value+"";
-        }
-        else {
+            return _value + "";
+        } else {
             return ((int) _value) + "";
         }
     }
 
     /**
      * Calculates the maximum text height which is possible based on the used Paint and its settings.
+     *
      * @param _Paint Paint object which will be used to display a text.
      * @return Maximum text height in px.
      */
@@ -167,6 +170,7 @@ public class Utils {
 
     /**
      * Checks if a point is in the given rectangle.
+     *
      * @param _Rect rectangle which is checked
      * @param _X    x-coordinate of the point
      * @param _Y    y-coordinate of the point
@@ -175,7 +179,6 @@ public class Utils {
     public static boolean intersectsPointWithRectF(RectF _Rect, float _X, float _Y) {
         return _X > _Rect.left && _X < _Rect.right && _Y > _Rect.top && _Y < _Rect.bottom;
     }
-
 
     @SuppressLint("NewApi")
     public static void setLayerToSW(View v) {
@@ -190,6 +193,4 @@ public class Utils {
             v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         }
     }
-
-    private static final String LOG_TAG = Utils.class.getSimpleName();
 }

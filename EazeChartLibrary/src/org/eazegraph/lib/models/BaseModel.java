@@ -26,6 +26,31 @@ import android.graphics.RectF;
  */
 public abstract class BaseModel {
 
+    /**
+     * Label value
+     */
+    protected String mLegendLabel;
+    /**
+     * Indicates whether the label should be shown or not.
+     */
+    protected boolean mShowLabel;
+    /**
+     * X-coordinate of the label.
+     */
+    private int mLegendLabelPosition;
+    /**
+     * Boundaries of the label
+     */
+    private RectF mLegendBounds;
+    /**
+     * Boundaries of the legend labels value
+     */
+    private Rect mTextBounds;
+    /**
+     * Indicates if the label should be ignored, when the boundaries are calculated.
+     */
+    private boolean mIgnore = false;
+
     protected BaseModel(String _legendLabel) {
         mLegendLabel = _legendLabel;
     }
@@ -80,34 +105,4 @@ public abstract class BaseModel {
     public void setIgnore(boolean _ignore) {
         mIgnore = _ignore;
     }
-
-    /**
-     * Label value
-     */
-    protected String    mLegendLabel;
-
-    /**
-     * Indicates whether the label should be shown or not.
-     */
-    protected boolean   mShowLabel;
-
-    /**
-     * X-coordinate of the label.
-     */
-    private int     mLegendLabelPosition;
-
-    /**
-     * Boundaries of the label
-     */
-    private RectF   mLegendBounds;
-
-    /**
-     * Boundaries of the legend labels value
-     */
-    private Rect    mTextBounds;
-
-    /**
-     * Indicates if the label should be ignored, when the boundaries are calculated.
-     */
-    private boolean mIgnore = false;
 }

@@ -1,19 +1,19 @@
 /**
-*
-*   Copyright (C) 2014 Paul Cech
-*
-*   Licensed under the Apache License, Version 2.0 (the "License");
-*   you may not use this file except in compliance with the License.
-*   You may obtain a copy of the License at
-*
-*   http://www.apache.org/licenses/LICENSE-2.0
-*
-*   Unless required by applicable law or agreed to in writing, software
-*   distributed under the License is distributed on an "AS IS" BASIS,
-*   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-*   See the License for the specific language governing permissions and
-*   limitations under the License.
-*/
+ *
+ *   Copyright (C) 2014 Paul Cech
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
+ */
 
 package org.eazegraph.lib.charts;
 
@@ -24,7 +24,6 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-
 import org.eazegraph.lib.R;
 import org.eazegraph.lib.models.BarModel;
 import org.eazegraph.lib.models.BaseModel;
@@ -37,6 +36,13 @@ import java.util.List;
  * A simple Bar Chart where the bar heights are dependent on each other.
  */
 public class BarChart extends BaseBarChart {
+
+    public static final boolean DEF_SHOW_VALUES = true;
+    private static final String LOG_TAG = BarChart.class.getSimpleName();
+    protected boolean mShowValues;
+    private List<BarModel> mData;
+    private Paint mValuePaint;
+    private int mValueDistance = (int) Utils.dpToPx(3);
 
     /**
      * Simple constructor to use when creating a view from code.
@@ -66,7 +72,7 @@ public class BarChart extends BaseBarChart {
      * @param context The Context the view is running in, through which it can
      *                access the current theme, resources, etc.
      * @param attrs   The attributes of the XML tag that is inflating the view.
-     * @see #View(android.content.Context, android.util.AttributeSet, int)
+     *
      */
     public BarChart(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -91,6 +97,7 @@ public class BarChart extends BaseBarChart {
 
     /**
      * Adds a new {@link org.eazegraph.lib.models.BarModel} to the BarChart.
+     *
      * @param _Bar The BarModel which will be added to the chart.
      */
     public void addBar(BarModel _Bar) {
@@ -100,6 +107,7 @@ public class BarChart extends BaseBarChart {
 
     /**
      * Adds a new list of {@link org.eazegraph.lib.models.BarModel} to the BarChart.
+     *
      * @param _List The BarModel list which will be added to the chart.
      */
     public void addBarList(List<BarModel> _List) {
@@ -109,6 +117,7 @@ public class BarChart extends BaseBarChart {
 
     /**
      * Returns the data which is currently present in the chart.
+     *
      * @return The currently used data.
      */
     @Override
@@ -117,20 +126,22 @@ public class BarChart extends BaseBarChart {
     }
 
     /**
+     * Returns if the values are drawn on top of the bars.
+     *
+     * @return True if they are drawn.
+     */
+    public boolean isShowValues() {
+        return mShowValues;
+    }
+
+    /**
      * Determines if the values of each data should be shown in the graph.
+     *
      * @param _showValues true to show values in the graph.
      */
     public void setShowValues(boolean _showValues) {
         mShowValues = _showValues;
         invalidateGlobal();
-    }
-
-    /**
-     * Returns if the values are drawn on top of the bars.
-     * @return True if they are drawn.
-     */
-    public boolean isShowValues() {
-        return mShowValues;
     }
 
     /**
@@ -151,6 +162,10 @@ public class BarChart extends BaseBarChart {
         }
     }
 
+    //##############################################################################################
+    // Variables
+    //##############################################################################################
+
     /**
      * This is the main entry point after the graph has been inflated. Used to initialize the graph
      * and its corresponding members.
@@ -164,7 +179,7 @@ public class BarChart extends BaseBarChart {
         mValuePaint = new Paint(mLegendPaint);
         mValuePaint.setTextAlign(Paint.Align.CENTER);
 
-        if(this.isInEditMode()) {
+        if (this.isInEditMode()) {
             addBar(new BarModel(2.3f));
             addBar(new BarModel(2.f));
             addBar(new BarModel(3.3f));
@@ -190,15 +205,16 @@ public class BarChart extends BaseBarChart {
 
     /**
      * Calculates the bar boundaries based on the bar width and bar margin.
-     * @param _Width    Calculated bar width
-     * @param _Margin   Calculated bar margin
+     *
+     * @param _Width  Calculated bar width
+     * @param _Margin Calculated bar margin
      */
     protected void calculateBounds(float _Width, float _Margin) {
         float maxValue = 0;
-        int   last = 0;
+        int last = 0;
 
         for (BarModel model : mData) {
-            if(model.getValue() > maxValue) {
+            if (model.getValue() > maxValue) {
                 maxValue = model.getValue();
             }
         }
@@ -220,6 +236,7 @@ public class BarChart extends BaseBarChart {
 
     /**
      * Callback method for drawing the bars in the child classes.
+     *
      * @param _Canvas The canvas object of the graph view.
      */
     protected void drawBars(Canvas _Canvas) {
@@ -243,6 +260,7 @@ public class BarChart extends BaseBarChart {
 
     /**
      * Returns the list of data sets which hold the information about the legend boundaries and text.
+     *
      * @return List of BaseModel data sets.
      */
     @Override
@@ -258,18 +276,4 @@ public class BarChart extends BaseBarChart {
         }
         return bounds;
     }
-
-    //##############################################################################################
-    // Variables
-    //##############################################################################################
-
-    private static final String LOG_TAG = BarChart.class.getSimpleName();
-
-    public static final boolean DEF_SHOW_VALUES = true;
-
-    private List<BarModel>  mData;
-
-    private Paint           mValuePaint;
-    protected boolean       mShowValues;
-    private int             mValueDistance = (int) Utils.dpToPx(3);
 }

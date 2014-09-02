@@ -19,27 +19,15 @@ package org.eazegraph.lib.charts;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.Rect;
-import android.graphics.RectF;
+import android.graphics.*;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
-
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.ValueAnimator;
-
 import org.eazegraph.lib.R;
 import org.eazegraph.lib.communication.IOnPointFocusedListener;
-import org.eazegraph.lib.models.BaseModel;
-import org.eazegraph.lib.models.LegendModel;
-import org.eazegraph.lib.models.Point2D;
-import org.eazegraph.lib.models.StandardValue;
-import org.eazegraph.lib.models.ValueLinePoint;
-import org.eazegraph.lib.models.ValueLineSeries;
+import org.eazegraph.lib.models.*;
 import org.eazegraph.lib.utils.Utils;
 
 import java.util.ArrayList;
@@ -51,6 +39,92 @@ import java.util.List;
  */
 public class ValueLineChart extends BaseChart {
 
+    public static final boolean DEF_USE_CUBIC = false;
+    public static final boolean DEF_USE_OVERLAP_FILL = false;
+    public static final float DEF_LINE_STROKE = 5f;
+    public static final float DEF_FIRST_MULTIPLIER = 0.33f;
+    public static final boolean DEF_SHOW_INDICATOR = true;
+    public static final float DEF_INDICATOR_WIDTH = 2f;
+    public static final int DEF_INDICATOR_COLOR = 0xFF0000FF;
+    // will be interpreted as sp value
+    public static final float DEF_INDICATOR_TEXT_SIZE = 15.f;
+    public static final float DEF_INDICATOR_LEFT_PADDING = 4.f;
+    public static final float DEF_INDICATOR_TOP_PADDING = 4.f;
+    public static final boolean DEF_SHOW_STANDARD_VALUE = true;
+    public static final float DEF_X_AXIS_STROKE = 2f;
+    public static final float DEF_LEGEND_STROKE = 2f;
+    public static final boolean DEF_ACTIVATE_INDICATOR_SHADOW = false;
+    // dimension value
+    public static final float DEF_INDICATOR_SHADOW_STRENGTH = 0.7f;
+    public static final int DEF_INDICATOR_SHADOW_COLOR = 0xFF676767;
+    public static final String DEF_INDICATOR_TEXT_UNIT = "";
+    public static final boolean DEF_SHOW_LEGEND_BENEATH_INDICATOR = false;
+    public static final boolean DEF_USE_DYNAMIC_SCALING = false;
+    public static final float DEF_SCALING_FACTOR = 0.96f;
+    private static final String LOG_TAG = ValueLineChart.class.getSimpleName();
+    protected Matrix mScale = new Matrix();
+    private Paint mLinePaint;
+    private Paint mLegendPaint;
+    private Paint mIndicatorPaint;
+    private List<ValueLineSeries> mSeries;
+    private List<LegendModel> mLegendList;
+    private boolean mHasNegativeValues = false;
+    private float mNegativeValue = 0.f;
+    private float mNegativeOffset = 0.f;
+    private IOnPointFocusedListener mListener = null;
+    private float mFirstMultiplier;
+    private float mSecondMultiplier;
+    private boolean mUseCustomLegend = false;
+    private Point2D mTouchedArea = new Point2D(0, 0);
+    private ValueLinePoint mFocusedPoint = null;
+    private float mValueTextHeight;
+    // GraphOverlay vars
+    private ValueLinePoint mLastPoint = null;
+    private int mValueLabelX = 0;
+    private int mValueLabelY = 0;
+    private int mLegendLabelX = 0;
+    private int mLegendLabelY = 0;
+    private List<StandardValue> mStandardValues = new ArrayList<StandardValue>();
+    /**
+     * Indicates to fill the bottom area of a series with its given color.
+     */
+    private boolean mUseOverlapFill;
+    private boolean mUseCubic;
+    private float mLineStroke;
+    private boolean mShowIndicator;
+    private float mIndicatorWidth;
+    private int mIndicatorLineColor;
+    private int mIndicatorTextColor;
+    private float mIndicatorTextSize;
+    private float mIndicatorLeftPadding;
+    private float mIndicatorTopPadding;
+    private boolean mShowStandardValues;
+    private float mXAxisStroke;
+
+    // ---------------------------------------------------------------------------------------------
+    //                          Override methods from view layers
+    // ---------------------------------------------------------------------------------------------
+    private boolean mActivateIndicatorShadow;
+    private float mIndicatorShadowStrength;
+    private int mIndicatorShadowColor;
+    private String mIndicatorTextUnit;
+
+
+    //##############################################################################################
+    // Variables
+    //##############################################################################################
+    private boolean mShowLegendBeneathIndicator;
+    /**
+     * Enabling this when only positive and big values are present and only have little fluctuations,
+     * a y-axis scaling takes place to see a better difference between the values.
+     */
+    private boolean mUseDynamicScaling;
+    /**
+     * The factor for the dynamic scaling, which determines how many percent of the minimum value
+     * should be subtracted to achieve the scaling.
+     */
+    private float mScalingFactor;
+
     /**
      * Simple constructor to use when creating a view from code.
      *
@@ -60,27 +134,27 @@ public class ValueLineChart extends BaseChart {
     public ValueLineChart(Context context) {
         super(context);
 
-        mUseCubic                     = DEF_USE_CUBIC;
-        mUseOverlapFill               = DEF_USE_OVERLAP_FILL;
-        mLineStroke                   = Utils.dpToPx(DEF_LINE_STROKE);
-        mFirstMultiplier              = DEF_FIRST_MULTIPLIER;
-        mSecondMultiplier             = 1.0f - mFirstMultiplier;
-        mShowIndicator                = DEF_SHOW_INDICATOR;
-        mIndicatorWidth               = Utils.dpToPx(DEF_INDICATOR_WIDTH);
-        mIndicatorLineColor           = DEF_INDICATOR_COLOR;
-        mIndicatorTextColor           = DEF_INDICATOR_COLOR;
-        mIndicatorTextSize            = Utils.dpToPx(DEF_INDICATOR_TEXT_SIZE);
-        mIndicatorLeftPadding         = Utils.dpToPx(DEF_INDICATOR_LEFT_PADDING);
-        mIndicatorTopPadding          = Utils.dpToPx(DEF_INDICATOR_TOP_PADDING);
-        mShowStandardValues           = DEF_SHOW_STANDARD_VALUE;
-        mXAxisStroke                  = Utils.dpToPx(DEF_X_AXIS_STROKE);
-        mActivateIndicatorShadow      = DEF_ACTIVATE_INDICATOR_SHADOW;
-        mIndicatorShadowStrength      = Utils.dpToPx(DEF_INDICATOR_SHADOW_STRENGTH);
-        mIndicatorShadowColor         = DEF_INDICATOR_SHADOW_COLOR;
-        mIndicatorTextUnit            = DEF_INDICATOR_TEXT_UNIT;
-        mShowLegendBeneathIndicator   = DEF_SHOW_LEGEND_BENEATH_INDICATOR;
-        mUseDynamicScaling            = DEF_USE_DYNAMIC_SCALING;
-        mScalingFactor                = DEF_SCALING_FACTOR;
+        mUseCubic = DEF_USE_CUBIC;
+        mUseOverlapFill = DEF_USE_OVERLAP_FILL;
+        mLineStroke = Utils.dpToPx(DEF_LINE_STROKE);
+        mFirstMultiplier = DEF_FIRST_MULTIPLIER;
+        mSecondMultiplier = 1.0f - mFirstMultiplier;
+        mShowIndicator = DEF_SHOW_INDICATOR;
+        mIndicatorWidth = Utils.dpToPx(DEF_INDICATOR_WIDTH);
+        mIndicatorLineColor = DEF_INDICATOR_COLOR;
+        mIndicatorTextColor = DEF_INDICATOR_COLOR;
+        mIndicatorTextSize = Utils.dpToPx(DEF_INDICATOR_TEXT_SIZE);
+        mIndicatorLeftPadding = Utils.dpToPx(DEF_INDICATOR_LEFT_PADDING);
+        mIndicatorTopPadding = Utils.dpToPx(DEF_INDICATOR_TOP_PADDING);
+        mShowStandardValues = DEF_SHOW_STANDARD_VALUE;
+        mXAxisStroke = Utils.dpToPx(DEF_X_AXIS_STROKE);
+        mActivateIndicatorShadow = DEF_ACTIVATE_INDICATOR_SHADOW;
+        mIndicatorShadowStrength = Utils.dpToPx(DEF_INDICATOR_SHADOW_STRENGTH);
+        mIndicatorShadowColor = DEF_INDICATOR_SHADOW_COLOR;
+        mIndicatorTextUnit = DEF_INDICATOR_TEXT_UNIT;
+        mShowLegendBeneathIndicator = DEF_SHOW_LEGEND_BENEATH_INDICATOR;
+        mUseDynamicScaling = DEF_USE_DYNAMIC_SCALING;
+        mScalingFactor = DEF_SCALING_FACTOR;
 
         initializeGraph();
     }
@@ -99,7 +173,7 @@ public class ValueLineChart extends BaseChart {
      * @param context The Context the view is running in, through which it can
      *                access the current theme, resources, etc.
      * @param attrs   The attributes of the XML tag that is inflating the view.
-     * @see #View(android.content.Context, android.util.AttributeSet, int)
+     * 
      */
     public ValueLineChart(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -112,34 +186,34 @@ public class ValueLineChart extends BaseChart {
 
         try {
 
-            mUseCubic                     = a.getBoolean(R.styleable.ValueLineChart_egUseCubic,                         DEF_USE_CUBIC);
-            mUseOverlapFill               = a.getBoolean(R.styleable.ValueLineChart_egUseOverlapFill,                   DEF_USE_OVERLAP_FILL);
-            mLineStroke                   = a.getDimension(R.styleable.ValueLineChart_egLineStroke,                     Utils.dpToPx(DEF_LINE_STROKE));
-            mFirstMultiplier              = a.getFloat(R.styleable.ValueLineChart_egCurveSmoothness,                    DEF_FIRST_MULTIPLIER);
-            mSecondMultiplier             = 1.0f - mFirstMultiplier;
-            mShowIndicator                = a.getBoolean(R.styleable.ValueLineChart_egShowValueIndicator,               DEF_SHOW_INDICATOR);
-            mIndicatorWidth               = a.getDimension(R.styleable.ValueLineChart_egIndicatorWidth,                 Utils.dpToPx(DEF_INDICATOR_WIDTH));
-            mIndicatorLineColor           = a.getColor(R.styleable.ValueLineChart_egIndicatorLineColor,                 DEF_INDICATOR_COLOR);
-            mIndicatorTextColor           = a.getColor(R.styleable.ValueLineChart_egIndicatorTextColor,                 DEF_INDICATOR_COLOR);
-            mIndicatorTextSize            = a.getDimension(R.styleable.ValueLineChart_egIndicatorWidth,                 Utils.dpToPx(DEF_INDICATOR_TEXT_SIZE));
-            mIndicatorLeftPadding         = a.getDimension(R.styleable.ValueLineChart_egIndicatorLeftPadding,           Utils.dpToPx(DEF_INDICATOR_LEFT_PADDING));
-            mIndicatorTopPadding          = a.getDimension(R.styleable.ValueLineChart_egIndicatorTopPadding,            Utils.dpToPx(DEF_INDICATOR_TOP_PADDING));
-            mShowStandardValues           = a.getBoolean(R.styleable.ValueLineChart_egShowStandardValue,                DEF_SHOW_STANDARD_VALUE);
-            mXAxisStroke                  = a.getDimension(R.styleable.ValueLineChart_egXAxisStroke,                    Utils.dpToPx(DEF_X_AXIS_STROKE));
-            mActivateIndicatorShadow      = a.getBoolean(R.styleable.ValueLineChart_egActivateIndicatorShadow,          DEF_ACTIVATE_INDICATOR_SHADOW);
-            mIndicatorShadowStrength      = a.getDimension(R.styleable.ValueLineChart_egIndicatorShadowStrength,        Utils.dpToPx(DEF_INDICATOR_SHADOW_STRENGTH));
-            mIndicatorShadowColor         = a.getColor(R.styleable.ValueLineChart_egIndicatorShadowColor,               DEF_INDICATOR_SHADOW_COLOR);
-            mIndicatorTextUnit            = a.getString(R.styleable.ValueLineChart_egIndicatorTextUnit);
-            mShowLegendBeneathIndicator   = a.getBoolean(R.styleable.ValueLineChart_egShowLegendBeneathIndicator,       DEF_SHOW_LEGEND_BENEATH_INDICATOR);
-            mUseDynamicScaling            = a.getBoolean(R.styleable.ValueLineChart_egUseDynamicScaling,                DEF_USE_DYNAMIC_SCALING);
-            mScalingFactor                = a.getFloat(R.styleable.ValueLineChart_egScalingFactor,                      DEF_SCALING_FACTOR);
+            mUseCubic = a.getBoolean(R.styleable.ValueLineChart_egUseCubic, DEF_USE_CUBIC);
+            mUseOverlapFill = a.getBoolean(R.styleable.ValueLineChart_egUseOverlapFill, DEF_USE_OVERLAP_FILL);
+            mLineStroke = a.getDimension(R.styleable.ValueLineChart_egLineStroke, Utils.dpToPx(DEF_LINE_STROKE));
+            mFirstMultiplier = a.getFloat(R.styleable.ValueLineChart_egCurveSmoothness, DEF_FIRST_MULTIPLIER);
+            mSecondMultiplier = 1.0f - mFirstMultiplier;
+            mShowIndicator = a.getBoolean(R.styleable.ValueLineChart_egShowValueIndicator, DEF_SHOW_INDICATOR);
+            mIndicatorWidth = a.getDimension(R.styleable.ValueLineChart_egIndicatorWidth, Utils.dpToPx(DEF_INDICATOR_WIDTH));
+            mIndicatorLineColor = a.getColor(R.styleable.ValueLineChart_egIndicatorLineColor, DEF_INDICATOR_COLOR);
+            mIndicatorTextColor = a.getColor(R.styleable.ValueLineChart_egIndicatorTextColor, DEF_INDICATOR_COLOR);
+            mIndicatorTextSize = a.getDimension(R.styleable.ValueLineChart_egIndicatorWidth, Utils.dpToPx(DEF_INDICATOR_TEXT_SIZE));
+            mIndicatorLeftPadding = a.getDimension(R.styleable.ValueLineChart_egIndicatorLeftPadding, Utils.dpToPx(DEF_INDICATOR_LEFT_PADDING));
+            mIndicatorTopPadding = a.getDimension(R.styleable.ValueLineChart_egIndicatorTopPadding, Utils.dpToPx(DEF_INDICATOR_TOP_PADDING));
+            mShowStandardValues = a.getBoolean(R.styleable.ValueLineChart_egShowStandardValue, DEF_SHOW_STANDARD_VALUE);
+            mXAxisStroke = a.getDimension(R.styleable.ValueLineChart_egXAxisStroke, Utils.dpToPx(DEF_X_AXIS_STROKE));
+            mActivateIndicatorShadow = a.getBoolean(R.styleable.ValueLineChart_egActivateIndicatorShadow, DEF_ACTIVATE_INDICATOR_SHADOW);
+            mIndicatorShadowStrength = a.getDimension(R.styleable.ValueLineChart_egIndicatorShadowStrength, Utils.dpToPx(DEF_INDICATOR_SHADOW_STRENGTH));
+            mIndicatorShadowColor = a.getColor(R.styleable.ValueLineChart_egIndicatorShadowColor, DEF_INDICATOR_SHADOW_COLOR);
+            mIndicatorTextUnit = a.getString(R.styleable.ValueLineChart_egIndicatorTextUnit);
+            mShowLegendBeneathIndicator = a.getBoolean(R.styleable.ValueLineChart_egShowLegendBeneathIndicator, DEF_SHOW_LEGEND_BENEATH_INDICATOR);
+            mUseDynamicScaling = a.getBoolean(R.styleable.ValueLineChart_egUseDynamicScaling, DEF_USE_DYNAMIC_SCALING);
+            mScalingFactor = a.getFloat(R.styleable.ValueLineChart_egScalingFactor, DEF_SCALING_FACTOR);
 
         } finally {
             // release the TypedArray so that it can be reused.
             a.recycle();
         }
 
-        if(mIndicatorTextUnit == null) {
+        if (mIndicatorTextUnit == null) {
             mIndicatorTextUnit = "";
         }
 
@@ -148,6 +222,7 @@ public class ValueLineChart extends BaseChart {
 
     /**
      * Adds a new series to the graph.
+     *
      * @param _Series The series which should be added.
      */
     public void addSeries(ValueLineSeries _Series) {
@@ -168,6 +243,7 @@ public class ValueLineChart extends BaseChart {
 
     /**
      * Adds a custom legend which should be displayed instead of the dynamic legend.
+     *
      * @param _Legend A list of LegendModels which will be displayed.
      */
     public void addLegend(List<LegendModel> _Legend) {
@@ -179,6 +255,7 @@ public class ValueLineChart extends BaseChart {
     /**
      * Adds a standard value to the graph. The standard value is a horizontal line as an overlay
      * dependent on the loaded data set.
+     *
      * @param _standardValue The value which will be interpreted as a y-coordinate dependent
      *                       on the maximum value of the data set.
      */
@@ -190,6 +267,7 @@ public class ValueLineChart extends BaseChart {
     /**
      * Adds a standard value to the graph. The standard value is a horizontal line as an overlay
      * dependent on the loaded data set.
+     *
      * @param _standardValue The value which will be interpreted as a y-coordinate dependent
      *                       on the maximum value of the data set.
      */
@@ -200,6 +278,7 @@ public class ValueLineChart extends BaseChart {
 
     /**
      * Adds a list of standard values to the graph.
+     *
      * @param _standardValues The list with standard values.
      */
     public void addStandardValues(List<StandardValue> _standardValues) {
@@ -217,6 +296,7 @@ public class ValueLineChart extends BaseChart {
 
     /**
      * Sets the onPointFocusedListener.
+     *
      * @param _listener An instance of the IOnPointFocusedListener interface.
      */
     public void setOnPointFocusedListener(IOnPointFocusedListener _listener) {
@@ -225,6 +305,7 @@ public class ValueLineChart extends BaseChart {
 
     /**
      * Checks if the graph is a cubic graph.
+     *
      * @return True if it's a cubic graph.
      */
     public boolean isUseCubic() {
@@ -233,6 +314,7 @@ public class ValueLineChart extends BaseChart {
 
     /**
      * Sets the option if the graph should use a cubic spline interpolation or not.
+     *
      * @param _useCubic True if the graph should use cubic spline interpolation.
      */
     public void setUseCubic(boolean _useCubic) {
@@ -243,6 +325,7 @@ public class ValueLineChart extends BaseChart {
     /**
      * Checks if the graph uses an overlap fill. An overlap fill occurs whether the user set it explicitly
      * through the attributes or if only one data set is present.
+     *
      * @return True if overlap fill is activated.
      */
     public boolean isUseOverlapFill() {
@@ -251,6 +334,7 @@ public class ValueLineChart extends BaseChart {
 
     /**
      * Sets the overlap fill attribute.
+     *
      * @param _useOverlapFill True if an overlap fill should be used.
      */
     public void setUseOverlapFill(boolean _useOverlapFill) {
@@ -260,6 +344,7 @@ public class ValueLineChart extends BaseChart {
 
     /**
      * Returns the size of the line stroke for every series.
+     *
      * @return Line stroke in px.
      */
     public float getLineStroke() {
@@ -268,6 +353,7 @@ public class ValueLineChart extends BaseChart {
 
     /**
      * Sets the line stroke for every series.
+     *
      * @param _lineStroke Line stroke as a dp value.
      */
     public void setLineStroke(float _lineStroke) {
@@ -277,6 +363,7 @@ public class ValueLineChart extends BaseChart {
 
     /**
      * Checks if the indicator should be shown or not.
+     *
      * @return True if the indicator is shown.
      */
     public boolean isShowIndicator() {
@@ -285,6 +372,7 @@ public class ValueLineChart extends BaseChart {
 
     /**
      * Sets if the indicator should be shown or not.
+     *
      * @param _showIndicator True if the indicator should be shown.
      */
     public void setShowIndicator(boolean _showIndicator) {
@@ -294,6 +382,7 @@ public class ValueLineChart extends BaseChart {
 
     /**
      * Returns the indicator line width (stroke).
+     *
      * @return Indicator line width in px.
      */
     public float getIndicatorWidth() {
@@ -302,6 +391,7 @@ public class ValueLineChart extends BaseChart {
 
     /**
      * Sets the indicator line width (stroke)
+     *
      * @param _indicatorWidth Indicator width as a dp value.
      */
     public void setIndicatorWidth(float _indicatorWidth) {
@@ -311,6 +401,7 @@ public class ValueLineChart extends BaseChart {
 
     /**
      * Returns the color of the indicator line.
+     *
      * @return Color value.
      */
     public int getIndicatorLineColor() {
@@ -319,6 +410,7 @@ public class ValueLineChart extends BaseChart {
 
     /**
      * Sets the indicator line color.
+     *
      * @param _indicatorLineColor Indicator line color value
      */
     public void setIndicatorLineColor(int _indicatorLineColor) {
@@ -347,6 +439,7 @@ public class ValueLineChart extends BaseChart {
 
     /**
      * Returns the indicators value text size.
+     *
      * @return Indicator text size.
      */
     public float getIndicatorTextSize() {
@@ -355,6 +448,7 @@ public class ValueLineChart extends BaseChart {
 
     /**
      * Sets the indicators value text size.
+     *
      * @param _indicatorTextSize Indicator text size in sp.
      */
     public void setIndicatorTextSize(float _indicatorTextSize) {
@@ -364,6 +458,7 @@ public class ValueLineChart extends BaseChart {
 
     /**
      * Returns the left padding for the indicator text.
+     *
      * @return Indicator text left padding in px
      */
     public float getIndicatorLeftPadding() {
@@ -372,6 +467,7 @@ public class ValueLineChart extends BaseChart {
 
     /**
      * Sets the left padding for the indicator text.
+     *
      * @param _indicatorLeftPadding Indicator text left padding in dp
      */
     public void setIndicatorLeftPadding(float _indicatorLeftPadding) {
@@ -381,6 +477,7 @@ public class ValueLineChart extends BaseChart {
 
     /**
      * Returns the top padding for the indicator text.
+     *
      * @return Indicator text top padding in px
      */
     public float getIndicatorTopPadding() {
@@ -389,6 +486,7 @@ public class ValueLineChart extends BaseChart {
 
     /**
      * Sets the top padding for the indicator text.
+     *
      * @param _indicatorTopPadding Indicator text top padding in dp
      */
     public void setIndicatorTopPadding(float _indicatorTopPadding) {
@@ -398,6 +496,7 @@ public class ValueLineChart extends BaseChart {
 
     /**
      * Checks if the standard value line should be shown or not.
+     *
      * @return True if the standard value line should be shown.
      */
     public boolean isShowStandardValues() {
@@ -406,6 +505,7 @@ public class ValueLineChart extends BaseChart {
 
     /**
      * Sets if the standard value should be shown or not.
+     *
      * @param _showStandardValues True if the standard value line should be shown.
      */
     public void setShowStandardValues(boolean _showStandardValues) {
@@ -415,6 +515,7 @@ public class ValueLineChart extends BaseChart {
 
     /**
      * Returns the stroke size of the X-axis.
+     *
      * @return Stroke size in px.
      */
     public float getXAxisStroke() {
@@ -423,6 +524,7 @@ public class ValueLineChart extends BaseChart {
 
     /**
      * Sets the stroke size of the X-axis.
+     *
      * @param _XAxisStroke Stroke size in dp.
      */
     public void setXAxisStroke(float _XAxisStroke) {
@@ -431,7 +533,6 @@ public class ValueLineChart extends BaseChart {
     }
 
     /**
-     *
      * @return Checks if the shadow layer for the indicator text is activated.
      */
     public boolean hasActivateIndicatorShadow() {
@@ -440,6 +541,7 @@ public class ValueLineChart extends BaseChart {
 
     /**
      * Toggles the shadow layer for the indicator text.
+     *
      * @param _activateIndicatorShadow Indication if the shadow layer should be enabled or not.
      */
     public void setActivateIndicatorShadow(boolean _activateIndicatorShadow) {
@@ -448,7 +550,6 @@ public class ValueLineChart extends BaseChart {
     }
 
     /**
-     *
      * @return The shadow layers strength/radius.
      */
     public float getIndicatorShadowStrength() {
@@ -466,7 +567,6 @@ public class ValueLineChart extends BaseChart {
     }
 
     /**
-     *
      * @return The shadow color
      */
     public int getIndicatorShadowColor() {
@@ -484,7 +584,6 @@ public class ValueLineChart extends BaseChart {
     }
 
     /**
-     *
      * @return The currently set unit which is placed after the indicator text.
      */
     public String getIndicatorTextUnit() {
@@ -550,7 +649,7 @@ public class ValueLineChart extends BaseChart {
         super.onSizeChanged(w, h, oldw, oldh);
 
         onDataChanged();
-        if(mUseCustomLegend) {
+        if (mUseCustomLegend) {
             onLegendDataChanged();
         }
     }
@@ -565,7 +664,7 @@ public class ValueLineChart extends BaseChart {
 
         mGraphOverlay.decelerate();
 
-        mSeries     = new ArrayList<ValueLineSeries>();
+        mSeries = new ArrayList<ValueLineSeries>();
         mLegendList = new ArrayList<LegendModel>();
 
         mLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -618,7 +717,7 @@ public class ValueLineChart extends BaseChart {
             }
         });
 
-        if(this.isInEditMode()) {
+        if (this.isInEditMode()) {
             ValueLineSeries series1 = new ValueLineSeries();
             series1.setColor(0xFF63CBB0);
 
@@ -647,20 +746,20 @@ public class ValueLineChart extends BaseChart {
     /**
      * Should be called after new data is inserted. Will be automatically called, when the view dimensions
      * changed.
-     *
+     * <p/>
      * Calculates various offsets and positions for different overlay features based on the graph settings.
      * After the calculation the Path is generated as a normal path or cubic path (Based on 'egUseCubic' attribute).
      */
     @Override
     protected void onDataChanged() {
 
-        if(!mSeries.isEmpty()) {
-            int   usableGraphHeight = (int) (mGraphHeight - Utils.dpToPx(1.f));
-            int   seriesCount  = mSeries.size();
-            float maxValue     = 0.f;
-            float minValue     = Float.MAX_VALUE;
-            mNegativeValue     = 0.f;
-            mNegativeOffset    = 0.f;
+        if (!mSeries.isEmpty()) {
+            int usableGraphHeight = (int) (mGraphHeight - Utils.dpToPx(1.f));
+            int seriesCount = mSeries.size();
+            float maxValue = 0.f;
+            float minValue = Float.MAX_VALUE;
+            mNegativeValue = 0.f;
+            mNegativeOffset = 0.f;
             mHasNegativeValues = false;
 
             // calculate the maximum and minimum value present in data
@@ -679,10 +778,10 @@ public class ValueLineChart extends BaseChart {
             }
 
             // check if the standardvalue is greater than all other values
-            if(mShowStandardValues) {
+            if (mShowStandardValues) {
                 for (StandardValue value : mStandardValues) {
 
-                    if(value.getValue() > maxValue)
+                    if (value.getValue() > maxValue)
                         maxValue = value.getValue();
 
                     if (value.getValue() < mNegativeValue)
@@ -694,30 +793,29 @@ public class ValueLineChart extends BaseChart {
             }
 
 
-            if(!mUseDynamicScaling) {
+            if (!mUseDynamicScaling) {
                 minValue = 0;
-            }
-            else {
+            } else {
                 minValue *= mScalingFactor;
             }
 
             // check if values below zero were found
-            if(mNegativeValue < 0) {
+            if (mNegativeValue < 0) {
                 mHasNegativeValues = true;
                 maxValue += (mNegativeValue * -1);
                 minValue = 0;
             }
 
 
-            float heightMultiplier  = usableGraphHeight / (maxValue - minValue);
+            float heightMultiplier = usableGraphHeight / (maxValue - minValue);
 
             // calculate the offset
-            if(mHasNegativeValues) {
+            if (mHasNegativeValues) {
                 mNegativeOffset = (mNegativeValue * -1) * heightMultiplier;
             }
 
             // calculate the y position for standardValue
-            if(mShowStandardValues) {
+            if (mShowStandardValues) {
                 for (StandardValue value : mStandardValues) {
                     value.setY((int) (usableGraphHeight - mNegativeOffset - ((value.getValue() - minValue) * heightMultiplier)));
                 }
@@ -725,13 +823,12 @@ public class ValueLineChart extends BaseChart {
 
             for (ValueLineSeries series : mSeries) {
 
-                int   seriesPointCount  = series.getSeries().size();
+                int seriesPointCount = series.getSeries().size();
 
                 // check if more than one point is available
                 if (seriesPointCount <= 1) {
                     Log.w(LOG_TAG, "More than one point should be available!");
-                }
-                else {
+                } else {
 
                     float widthOffset = (float) mGraphWidth / (float) seriesPointCount;
                     widthOffset += widthOffset / seriesPointCount;
@@ -757,7 +854,7 @@ public class ValueLineChart extends BaseChart {
 
                             int i3 = (seriesPointCount - i) < 3 ? i + 1 : i + 2;
                             float offset2 = (seriesPointCount - i) < 3 ? mGraphWidth : currentOffset + widthOffset;
-                            float offset3 = (seriesPointCount - i) < 3 ? mGraphWidth : currentOffset + (2*widthOffset);
+                            float offset3 = (seriesPointCount - i) < 3 ? mGraphWidth : currentOffset + (2 * widthOffset);
 
                             P1.setX(currentOffset);
                             P1.setY(usableGraphHeight - ((series.getSeries().get(i).getValue() - minValue) * heightMultiplier));
@@ -808,7 +905,7 @@ public class ValueLineChart extends BaseChart {
                 }
             }
 
-            if(!mUseCustomLegend) {
+            if (!mUseCustomLegend) {
                 int index = 0;
                 int size = mSeries.get(0).getSeries().size();
 
@@ -833,7 +930,7 @@ public class ValueLineChart extends BaseChart {
             }
 
             // set the first point for the indicator
-            if(mShowIndicator && mSeries.size() == 1) {
+            if (mShowIndicator && mSeries.size() == 1) {
                 int size = mSeries.get(0).getSeries().size();
                 int index;
 
@@ -864,7 +961,7 @@ public class ValueLineChart extends BaseChart {
      */
     protected void onLegendDataChanged() {
 
-        int   legendCount = mLegendList.size();
+        int legendCount = mLegendList.size();
         float margin = (mLegendWidth / legendCount);
         float currentOffset = 0;
 
@@ -893,57 +990,55 @@ public class ValueLineChart extends BaseChart {
 
         // calculate string positions in overlay
         mValueTextHeight = valueRect.height();
-        mValueLabelY  = (int) (mValueTextHeight + mIndicatorTopPadding);
+        mValueLabelY = (int) (mValueTextHeight + mIndicatorTopPadding);
         mLegendLabelY = (int) (mValueTextHeight + mIndicatorTopPadding + legendRect.height() + Utils.dpToPx(7.f));
 
         int chosenWidth = valueRect.width() > legendRect.width() ? valueRect.width() : legendRect.width();
 
         // check if text reaches over screen
-        if(mFocusedPoint.getCoordinates().getX() + chosenWidth + mIndicatorLeftPadding > mGraphWidth) {
-            mValueLabelX  = (int) (mFocusedPoint.getCoordinates().getX() - (valueRect.width() + mIndicatorLeftPadding));
+        if (mFocusedPoint.getCoordinates().getX() + chosenWidth + mIndicatorLeftPadding > mGraphWidth) {
+            mValueLabelX = (int) (mFocusedPoint.getCoordinates().getX() - (valueRect.width() + mIndicatorLeftPadding));
             mLegendLabelX = (int) (mFocusedPoint.getCoordinates().getX() - (legendRect.width() + mIndicatorLeftPadding));
-        }
-        else {
+        } else {
             mValueLabelX = mLegendLabelX = (int) (mFocusedPoint.getCoordinates().getX() + mIndicatorLeftPadding);
         }
     }
 
     /**
      * Returns the first series.
+     *
      * @return The first series.
      */
     @Override
-    public List<ValueLinePoint> getData() { return mSeries.get(0).getSeries(); }
+    public List<ValueLinePoint> getData() {
+        return mSeries.get(0).getSeries();
+    }
 
     /**
      * Returns all series which are currently inserted.
+     *
      * @return Inserted series.
      */
-    public List<ValueLineSeries> getDataSeries() { return mSeries; }
-
-    // ---------------------------------------------------------------------------------------------
-    //                          Override methods from view layers
-    // ---------------------------------------------------------------------------------------------
-
+    public List<ValueLineSeries> getDataSeries() {
+        return mSeries;
+    }
 
     @Override
     protected void onGraphDraw(Canvas _Canvas) {
         super.onGraphDraw(_Canvas);
-        if(mUseOverlapFill) {
+        if (mUseOverlapFill) {
             mLinePaint.setStyle(Paint.Style.FILL);
-        }
-        else {
-            if(mSeries.size() == 1) {
+        } else {
+            if (mSeries.size() == 1) {
                 mLinePaint.setStyle(Paint.Style.FILL);
-            }
-            else {
+            } else {
                 mLinePaint.setStrokeWidth(mLineStroke);
                 mLinePaint.setStyle(Paint.Style.STROKE);
             }
         }
 
         _Canvas.concat(mScale);
-        if(mHasNegativeValues) {
+        if (mHasNegativeValues) {
             _Canvas.translate(0, -mNegativeOffset);
         }
         // drawing of lines
@@ -970,7 +1065,7 @@ public class ValueLineChart extends BaseChart {
         );
 
         // draw standard value line
-        if(mShowStandardValues) {
+        if (mShowStandardValues) {
             for (StandardValue value : mStandardValues) {
                 mIndicatorPaint.setColor(value.getColor());
                 mIndicatorPaint.setStrokeWidth(value.getStroke());
@@ -986,16 +1081,16 @@ public class ValueLineChart extends BaseChart {
 
         // draw touch indicator
         // TODO: if mShowIndicator is true, then check all series not only if one series is inserted
-        if(mShowIndicator && mSeries.size() == 1) {
+        if (mShowIndicator && mSeries.size() == 1) {
             mIndicatorPaint.setColor(mIndicatorLineColor);
             mIndicatorPaint.setStrokeWidth(mIndicatorWidth);
 
             _Canvas.drawLine(mTouchedArea.getX(), 0, mTouchedArea.getX(), mGraphHeight, mIndicatorPaint);
 
-            if(mFocusedPoint != null) {
+            if (mFocusedPoint != null) {
 
                 // set shadow
-                if(mActivateIndicatorShadow) {
+                if (mActivateIndicatorShadow) {
                     mIndicatorPaint.setShadowLayer(mIndicatorShadowStrength, 0, 0, mIndicatorShadowColor);
                 }
 
@@ -1005,7 +1100,7 @@ public class ValueLineChart extends BaseChart {
                         mValueLabelY,
                         mIndicatorPaint);
 
-                if(mShowLegendBeneathIndicator) {
+                if (mShowLegendBeneathIndicator) {
                     mLegendPaint.setColor(mIndicatorTextColor);
                     _Canvas.drawText(mFocusedPoint.getLegendLabel(),
                             mLegendLabelX,
@@ -1014,7 +1109,7 @@ public class ValueLineChart extends BaseChart {
                 }
 
                 // reset shadow
-                if(mActivateIndicatorShadow) {
+                if (mActivateIndicatorShadow) {
                     mIndicatorPaint.setShadowLayer(0, 0, 0, 0x00000000);
                 }
             }
@@ -1028,7 +1123,7 @@ public class ValueLineChart extends BaseChart {
         mLegendPaint.setColor(mLegendColor);
         mLegendPaint.setStrokeWidth(DEF_LEGEND_STROKE);
 
-        if(!mSeries.isEmpty()) {
+        if (!mSeries.isEmpty()) {
             if (mUseCustomLegend) {
                 for (LegendModel model : mLegendList) {
                     Rect textBounds = model.getTextBounds();
@@ -1068,8 +1163,8 @@ public class ValueLineChart extends BaseChart {
                 return true;
         }
 
-        if(mShowIndicator && mSeries.size() == 1) {
-            int size       = mSeries.get(0).getSeries().size();
+        if (mShowIndicator && mSeries.size() == 1) {
+            int size = mSeries.get(0).getSeries().size();
 
             for (int i = 0; i < size; i++) {
 
@@ -1114,7 +1209,7 @@ public class ValueLineChart extends BaseChart {
                 mTouchedArea.setY(newY);
             }
 
-            if(mLastPoint != mFocusedPoint) {
+            if (mLastPoint != mFocusedPoint) {
                 mLastPoint = mFocusedPoint;
 
                 calculateValueTextHeight();
@@ -1128,98 +1223,4 @@ public class ValueLineChart extends BaseChart {
         }
         return true;
     }
-
-
-    //##############################################################################################
-    // Variables
-    //##############################################################################################
-
-    private static final String LOG_TAG = ValueLineChart.class.getSimpleName();
-
-    public static final boolean DEF_USE_CUBIC                       = false;
-    public static final boolean DEF_USE_OVERLAP_FILL                = false;
-    public static final float   DEF_LINE_STROKE                     = 5f;
-    public static final float   DEF_FIRST_MULTIPLIER                = 0.33f;
-    public static final boolean DEF_SHOW_INDICATOR                  = true;
-    public static final float   DEF_INDICATOR_WIDTH                 = 2f;
-    public static final int     DEF_INDICATOR_COLOR                 = 0xFF0000FF;
-    // will be interpreted as sp value
-    public static final float   DEF_INDICATOR_TEXT_SIZE             = 15.f;
-    public static final float   DEF_INDICATOR_LEFT_PADDING          = 4.f;
-    public static final float   DEF_INDICATOR_TOP_PADDING           = 4.f;
-
-    public static final boolean DEF_SHOW_STANDARD_VALUE             = true;
-    public static final float   DEF_X_AXIS_STROKE                   = 2f;
-    public static final float   DEF_LEGEND_STROKE                   = 2f;
-    public static final boolean DEF_ACTIVATE_INDICATOR_SHADOW       = false;
-    // dimension value
-    public static final float   DEF_INDICATOR_SHADOW_STRENGTH       = 0.7f;
-    public static final int     DEF_INDICATOR_SHADOW_COLOR          = 0xFF676767;
-    public static final String  DEF_INDICATOR_TEXT_UNIT             = "";
-    public static final boolean DEF_SHOW_LEGEND_BENEATH_INDICATOR   = false;
-    public static final boolean DEF_USE_DYNAMIC_SCALING             = false;
-    public static final float   DEF_SCALING_FACTOR                  = 0.96f;
-
-    private Paint                   mLinePaint;
-    private Paint                   mLegendPaint;
-    private Paint                   mIndicatorPaint;
-
-    private List<ValueLineSeries>   mSeries;
-    private List<LegendModel>       mLegendList;
-
-    private boolean                 mHasNegativeValues  = false;
-    private float                   mNegativeValue      = 0.f;
-    private float                   mNegativeOffset     = 0.f;
-
-    private IOnPointFocusedListener mListener = null;
-
-    private float                   mFirstMultiplier;
-    private float                   mSecondMultiplier;
-
-    private boolean                 mUseCustomLegend = false;
-    private Point2D                 mTouchedArea     = new Point2D(0, 0);
-    private ValueLinePoint          mFocusedPoint    = null;
-    private float                   mValueTextHeight;
-
-    // GraphOverlay vars
-    private ValueLinePoint          mLastPoint = null;
-    private int                     mValueLabelX  = 0;
-    private int                     mValueLabelY  = 0;
-    private int                     mLegendLabelX = 0;
-    private int                     mLegendLabelY = 0;
-
-    private List<StandardValue>     mStandardValues = new ArrayList<StandardValue>();
-
-    /**
-     * Indicates to fill the bottom area of a series with its given color.
-     */
-    private boolean                 mUseOverlapFill;
-    private boolean                 mUseCubic;
-    private float                   mLineStroke;
-    private boolean                 mShowIndicator;
-    private float                   mIndicatorWidth;
-    private int                     mIndicatorLineColor;
-    private int                     mIndicatorTextColor;
-    private float                   mIndicatorTextSize;
-    private float                   mIndicatorLeftPadding;
-    private float                   mIndicatorTopPadding;
-    private boolean                 mShowStandardValues;
-    private float                   mXAxisStroke;
-    private boolean                 mActivateIndicatorShadow;
-    private float                   mIndicatorShadowStrength;
-    private int                     mIndicatorShadowColor;
-    private String                  mIndicatorTextUnit;
-    private boolean                 mShowLegendBeneathIndicator;
-    /**
-     * Enabling this when only positive and big values are present and only have little fluctuations,
-     * a y-axis scaling takes place to see a better difference between the values.
-     */
-    private boolean                 mUseDynamicScaling;
-    /**
-     * The factor for the dynamic scaling, which determines how many percent of the minimum value
-     * should be subtracted to achieve the scaling.
-     */
-    private float                   mScalingFactor;
-
-    protected Matrix                mScale = new Matrix();
 }

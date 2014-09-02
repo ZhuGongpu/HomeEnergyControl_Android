@@ -22,6 +22,15 @@ package org.eazegraph.lib.models;
  */
 public class ValueLinePoint extends BaseModel implements Comparable {
 
+    /**
+     * Value of the Point.
+     */
+    private float mValue;
+    /**
+     * The coordinates for the chart. These are calculated dynamically.
+     */
+    private Point2D mCoordinates;
+
     public ValueLinePoint(float _value) {
         super("" + _value);
         mValue = _value;
@@ -53,22 +62,10 @@ public class ValueLinePoint extends BaseModel implements Comparable {
         ValueLinePoint point = (ValueLinePoint) o;
         if (this.mValue > point.getValue()) {
             return 1;
-        }
-        else if (this.mValue == point.getValue()) {
+        } else if (this.mValue == point.getValue()) {
             return 0;
-        }
-        else {
+        } else {
             return -1;
         }
     }
-
-    /**
-     * Value of the Point.
-     */
-    private float   mValue;
-
-    /**
-     * The coordinates for the chart. These are calculated dynamically.
-     */
-    private Point2D mCoordinates;
 }

@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-
 import org.eazegraph.lib.models.BarModel;
 import org.eazegraph.lib.models.BaseModel;
 import org.eazegraph.lib.models.StackedBarModel;
@@ -20,6 +19,9 @@ import java.util.List;
  * heights are dependent on each other.
  */
 public class StackedBarChart extends BaseBarChart {
+    private static final String LOG_TAG = BarChart.class.getSimpleName();
+    private List<StackedBarModel> mData;
+
     /**
      * Simple constructor to use when creating a view from code.
      *
@@ -45,7 +47,6 @@ public class StackedBarChart extends BaseBarChart {
      * @param context The Context the view is running in, through which it can
      *                access the current theme, resources, etc.
      * @param attrs   The attributes of the XML tag that is inflating the view.
-     * @see #View(android.content.Context, android.util.AttributeSet, int)
      */
     public StackedBarChart(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -54,6 +55,7 @@ public class StackedBarChart extends BaseBarChart {
 
     /**
      * Adds a new {@link org.eazegraph.lib.models.StackedBarModel} to the BarChart.
+     *
      * @param _Bar The StackedBarModel which will be added to the chart.
      */
     public void addBar(StackedBarModel _Bar) {
@@ -63,6 +65,7 @@ public class StackedBarChart extends BaseBarChart {
 
     /**
      * Adds a new list of {@link org.eazegraph.lib.models.StackedBarModel} to the BarChart.
+     *
      * @param _List The StackedBarModel list which will be added to the chart.
      */
     public void addBarList(List<StackedBarModel> _List) {
@@ -72,6 +75,7 @@ public class StackedBarChart extends BaseBarChart {
 
     /**
      * Returns the data which is currently present in the chart.
+     *
      * @return The currently used data.
      */
     @Override
@@ -106,11 +110,11 @@ public class StackedBarChart extends BaseBarChart {
         super.initializeGraph();
         mData = new ArrayList<StackedBarModel>();
 
-        if(this.isInEditMode()) {
+        if (this.isInEditMode()) {
             StackedBarModel s1 = new StackedBarModel();
 
             s1.addBar(new BarModel(2.3f, 0xFF123456));
-            s1.addBar(new BarModel(2.f,  0xFF1EF556));
+            s1.addBar(new BarModel(2.f, 0xFF1EF556));
             s1.addBar(new BarModel(3.3f, 0xFF1BA4E6));
 
             StackedBarModel s2 = new StackedBarModel();
@@ -135,12 +139,13 @@ public class StackedBarChart extends BaseBarChart {
 
     /**
      * Calculates the bar boundaries based on the bar width and bar margin.
-     * @param _Width    Calculated bar width
-     * @param _Margin   Calculated bar margin
+     *
+     * @param _Width  Calculated bar width
+     * @param _Margin Calculated bar margin
      */
     protected void calculateBounds(float _Width, float _Margin) {
 
-        int   last = 0;
+        int last = 0;
 
         for (StackedBarModel model : mData) {
             float lastHeight = 0;
@@ -168,6 +173,7 @@ public class StackedBarChart extends BaseBarChart {
 
     /**
      * Callback method for drawing the bars in the child classes.
+     *
      * @param _Canvas The canvas object of the graph view.
      */
     protected void drawBars(Canvas _Canvas) {
@@ -193,8 +199,13 @@ public class StackedBarChart extends BaseBarChart {
         }
     }
 
+    //##############################################################################################
+    // Variables
+    //##############################################################################################
+
     /**
      * Returns the list of data sets which hold the information about the legend boundaries and text.
+     *
      * @return List of BaseModel data sets.
      */
     @Override
@@ -210,13 +221,5 @@ public class StackedBarChart extends BaseBarChart {
         }
         return bounds;
     }
-
-    //##############################################################################################
-    // Variables
-    //##############################################################################################
-
-    private static final String LOG_TAG = BarChart.class.getSimpleName();
-
-    private List<StackedBarModel>  mData;
 
 }

@@ -13,13 +13,19 @@
             android:layout_width="match_parent"
             android:layout_height="300dp"
             app:egLegendTextSize="18sp"
-            app:egUsePieRotation="false"
+            app:egUsePieRotation="true"
             app:egValueTextSize="36sp"
             app:egAutoCenter="false"
             app:egOpenClockwise="false"
             app:egInnerValueUnit="%"
             app:egInnerPadding="95"
+            app:egValueTextColor="#ff2c98d4"
             android:background="@android:color/transparent"/>
+
+    <Button
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
 </LinearLayout>
 

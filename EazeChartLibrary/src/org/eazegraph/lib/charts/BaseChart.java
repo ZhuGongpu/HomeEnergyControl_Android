@@ -27,9 +27,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.nineoldandroids.animation.ValueAnimator;
-
 import org.eazegraph.lib.R;
 import org.eazegraph.lib.models.BaseModel;
 import org.eazegraph.lib.utils.Utils;
@@ -45,6 +43,40 @@ import java.util.Locale;
  */
 public abstract class BaseChart extends ViewGroup {
 
+    public static final float DEF_LEGEND_HEIGHT = 58.f;
+    public static final int DEF_LEGEND_COLOR = 0xFF898989;
+    // will be interpreted as sp value
+    public static final float DEF_LEGEND_TEXT_SIZE = 12.f;
+    public static final int DEF_ANIMATION_TIME = 2000;
+    public static final boolean DEF_SHOW_DECIMAL = false;
+    protected final static NumberFormat mFormatter = NumberFormat.getInstance(Locale.getDefault());
+    protected Graph mGraph;
+    protected GraphOverlay mGraphOverlay;
+    protected Legend mLegend;
+    protected int mHeight;
+    protected int mWidth;
+    protected int mGraphWidth;
+    protected int mGraphHeight;
+    protected float mLegendWidth;
+    protected float mLegendHeight;
+    protected float mLegendTextSize;
+    protected int mLegendColor;
+    protected int mLeftPadding;
+    protected int mTopPadding;
+    protected int mRightPadding;
+    protected int mBottomPadding;
+    protected float mMaxFontHeight;
+    protected float mLegendTopPadding = Utils.dpToPx(4.f);
+
+    // ---------------------------------------------------------------------------------------------
+    //                          Override methods from view layers
+    // ---------------------------------------------------------------------------------------------
+    protected boolean mShowDecimal;
+    protected ValueAnimator mRevealAnimator = null;
+    protected float mRevealValue = 1.0f;
+    protected int mAnimationTime = 1000;
+    protected boolean mStartedAnimation = false;
+
     /**
      * Simple constructor to use when creating a view from code.
      *
@@ -54,11 +86,11 @@ public abstract class BaseChart extends ViewGroup {
     protected BaseChart(Context context) {
         super(context);
 
-        mLegendHeight   = Utils.dpToPx(DEF_LEGEND_HEIGHT);
+        mLegendHeight = Utils.dpToPx(DEF_LEGEND_HEIGHT);
         mLegendTextSize = Utils.dpToPx(DEF_LEGEND_TEXT_SIZE);
-        mLegendColor    = DEF_LEGEND_COLOR;
-        mAnimationTime  = DEF_ANIMATION_TIME;
-        mShowDecimal    = DEF_SHOW_DECIMAL;
+        mLegendColor = DEF_LEGEND_COLOR;
+        mAnimationTime = DEF_ANIMATION_TIME;
+        mShowDecimal = DEF_SHOW_DECIMAL;
     }
 
     /**
@@ -75,7 +107,6 @@ public abstract class BaseChart extends ViewGroup {
      * @param context The Context the view is running in, through which it can
      *                access the current theme, resources, etc.
      * @param attrs   The attributes of the XML tag that is inflating the view.
-     *
      */
     public BaseChart(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -88,11 +119,11 @@ public abstract class BaseChart extends ViewGroup {
 
         try {
 
-            mLegendHeight       = a.getDimension(R.styleable.BaseChart_egLegendHeight,     Utils.dpToPx(DEF_LEGEND_HEIGHT));
-            mLegendTextSize     = a.getDimension(R.styleable.BaseChart_egLegendTextSize,   Utils.dpToPx(DEF_LEGEND_TEXT_SIZE));
-            mAnimationTime      = a.getInt(R.styleable.BaseChart_egAnimationTime, DEF_ANIMATION_TIME);
-            mShowDecimal        = a.getBoolean(R.styleable.BaseChart_egShowDecimal, DEF_SHOW_DECIMAL);
-            mLegendColor        = a.getColor(R.styleable.BaseChart_egLegendColor, DEF_LEGEND_COLOR);
+            mLegendHeight = a.getDimension(R.styleable.BaseChart_egLegendHeight, Utils.dpToPx(DEF_LEGEND_HEIGHT));
+            mLegendTextSize = a.getDimension(R.styleable.BaseChart_egLegendTextSize, Utils.dpToPx(DEF_LEGEND_TEXT_SIZE));
+            mAnimationTime = a.getInt(R.styleable.BaseChart_egAnimationTime, DEF_ANIMATION_TIME);
+            mShowDecimal = a.getBoolean(R.styleable.BaseChart_egShowDecimal, DEF_SHOW_DECIMAL);
+            mLegendColor = a.getColor(R.styleable.BaseChart_egLegendColor, DEF_LEGEND_COLOR);
 
         } finally {
             // release the TypedArray so that it can be reused.
@@ -103,6 +134,7 @@ public abstract class BaseChart extends ViewGroup {
 
     /**
      * Returns the current height of the legend view
+     *
      * @return Legend view height
      */
     public float getLegendHeight() {
@@ -111,25 +143,32 @@ public abstract class BaseChart extends ViewGroup {
 
     /**
      * Sets and updates the height of the legend view.
+     *
      * @param _legendHeight The new legend view height.
      */
     public void setLegendHeight(float _legendHeight) {
         mLegendHeight = Utils.dpToPx(_legendHeight);
 
-        if(getData().size() > 0)
+        if (getData().size() > 0)
             onDataChanged();
     }
 
     /**
      * Returns the text size which is used by the legend.
+     *
      * @return Size of the legend text.
      */
     public float getLegendTextSize() {
         return mLegendTextSize;
     }
 
+    //##############################################################################################
+    // Variables
+    //##############################################################################################
+
     /**
      * Sets the size of the text which is displayed in the legend. (Interpreted as sp value)
+     *
      * @param _legendTextSize Size of the legend text.
      */
     public void setLegendTextSize(float _legendTextSize) {
@@ -138,6 +177,7 @@ public abstract class BaseChart extends ViewGroup {
 
     /**
      * Returns the animation time in milliseconds.
+     *
      * @return Animation time.
      */
     public int getAnimationTime() {
@@ -146,6 +186,7 @@ public abstract class BaseChart extends ViewGroup {
 
     /**
      * Sets the animation time in milliseconds.
+     *
      * @param _animationTime Animation time in milliseconds.
      */
     public void setAnimationTime(int _animationTime) {
@@ -186,10 +227,10 @@ public abstract class BaseChart extends ViewGroup {
         mWidth = w;
         mHeight = h;
 
-        mLeftPadding    = getPaddingLeft();
-        mTopPadding     = getPaddingTop();
-        mRightPadding   = getPaddingRight();
-        mBottomPadding  = getPaddingBottom();
+        mLeftPadding = getPaddingLeft();
+        mTopPadding = getPaddingTop();
+        mRightPadding = getPaddingRight();
+        mBottomPadding = getPaddingBottom();
 
         mGraph.layout(mLeftPadding, mTopPadding, w - mRightPadding, (int) (h - mLegendHeight - mBottomPadding));
         mGraphOverlay.layout(mLeftPadding, mTopPadding, w - mRightPadding, (int) (h - mLegendHeight - mBottomPadding));
@@ -200,7 +241,7 @@ public abstract class BaseChart extends ViewGroup {
      * Starts the chart animation.
      */
     public void startAnimation() {
-        if(mRevealAnimator != null) {
+        if (mRevealAnimator != null) {
             mStartedAnimation = true;
             mRevealAnimator.setDuration(mAnimationTime).start();
         }
@@ -216,7 +257,7 @@ public abstract class BaseChart extends ViewGroup {
 
         mGraphOverlay = new GraphOverlay(getContext());
         addView(mGraphOverlay);
-
+//TODO 考虑删除掉
         mLegend = new Legend(getContext());
         addView(mLegend);
     }
@@ -231,6 +272,7 @@ public abstract class BaseChart extends ViewGroup {
 
     /**
      * Returns the datasets which are currently inserted.
+     *
      * @return the datasets
      */
     public abstract List<? extends BaseModel> getData();
@@ -269,10 +311,6 @@ public abstract class BaseChart extends ViewGroup {
         mLegend.invalidate();
     }
 
-    // ---------------------------------------------------------------------------------------------
-    //                          Override methods from view layers
-    // ---------------------------------------------------------------------------------------------
-
     protected void onGraphDraw(Canvas _Canvas) {
 
     }
@@ -305,6 +343,10 @@ public abstract class BaseChart extends ViewGroup {
     // Graph
     //##############################################################################################
     protected class Graph extends View {
+        private float mRotation = 0;
+        private Matrix mTransform = new Matrix();
+        private PointF mPivot = new PointF();
+
         /**
          * Simple constructor to use when creating a view from code.
          *
@@ -391,10 +433,6 @@ public abstract class BaseChart extends ViewGroup {
             }
         }
 
-        private float  mRotation  = 0;
-        private Matrix mTransform = new Matrix();
-        private PointF mPivot     = new PointF();
-
     }
 
     //##############################################################################################
@@ -464,7 +502,7 @@ public abstract class BaseChart extends ViewGroup {
          * <ul>
          * <li>obeying click sound preferences
          * <li>dispatching OnClickListener calls
-         *
+         * <p/>
          * accessibility features are enabled
          * </ul>
          *
@@ -541,48 +579,5 @@ public abstract class BaseChart extends ViewGroup {
             onLegendSizeChanged(w, h, oldw, oldh);
         }
     }
-
-    //##############################################################################################
-    // Variables
-    //##############################################################################################
-
-    protected final static NumberFormat mFormatter = NumberFormat.getInstance(Locale.getDefault());
-
-    public static final float   DEF_LEGEND_HEIGHT       = 58.f;
-    public static final int     DEF_LEGEND_COLOR        = 0xFF898989;
-    // will be interpreted as sp value
-    public static final float   DEF_LEGEND_TEXT_SIZE    = 12.f;
-    public static final int     DEF_ANIMATION_TIME      = 2000;
-    public static final boolean DEF_SHOW_DECIMAL        = false;
-
-    protected Graph             mGraph;
-    protected GraphOverlay      mGraphOverlay;
-    protected Legend            mLegend;
-
-    protected int               mHeight;
-    protected int               mWidth;
-
-    protected int               mGraphWidth;
-    protected int               mGraphHeight;
-
-    protected float             mLegendWidth;
-    protected float             mLegendHeight;
-    protected float             mLegendTextSize;
-    protected int               mLegendColor;
-
-    protected int               mLeftPadding;
-    protected int               mTopPadding;
-    protected int               mRightPadding;
-    protected int               mBottomPadding;
-
-    protected float             mMaxFontHeight;
-    protected float             mLegendTopPadding = Utils.dpToPx(4.f);
-
-    protected boolean           mShowDecimal;
-
-    protected ValueAnimator     mRevealAnimator     = null;
-    protected float             mRevealValue        = 1.0f;
-    protected int               mAnimationTime      = 1000;
-    protected boolean           mStartedAnimation   = false;
 
 }
