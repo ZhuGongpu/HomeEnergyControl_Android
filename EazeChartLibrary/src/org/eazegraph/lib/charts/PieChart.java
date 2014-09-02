@@ -634,7 +634,7 @@ public class PieChart extends BaseChart {
         // do the scrolling animation. Need to tick it here and call postInvalidate() until the scrolling is done.
         if (Build.VERSION.SDK_INT < 11) {
             tickScrollAnimation();
-            if (!mScroller.isFinished()) {
+            if (mScroller != null && !mScroller.isFinished()) {
                 mGraph.postInvalidate();
             }
         }
@@ -850,13 +850,14 @@ public class PieChart extends BaseChart {
     }
 
     private void tickScrollAnimation() {
-        if (!mScroller.isFinished()) {
-            mScroller.computeScrollOffset();
-            setPieRotation(mScroller.getCurrY());
-        } else {
-            mScrollAnimator.cancel();
-            onScrollFinished();
-        }
+        if (mUsePieRotation)
+            if (!mScroller.isFinished()) {
+                mScroller.computeScrollOffset();
+                setPieRotation(mScroller.getCurrY());
+            } else {
+                mScrollAnimator.cancel();
+                onScrollFinished();
+            }
     }
 
     /**

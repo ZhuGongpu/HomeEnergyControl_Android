@@ -8,15 +8,14 @@
         >
 
     <org.eazegraph.lib.charts.PieChart
-            android:layout_margin="10dp"
+            android:layout_margin="20dp"
             android:id="@+id/piechart"
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:padding="10dp"
             app:egLegendTextSize="18sp"
-            app:egUsePieRotation="true"
+            app:egUsePieRotation="false"
             app:egValueTextSize="36sp"
-            app:egAutoCenter="true"
+            app:egAutoCenter="false"
             app:egOpenClockwise="false"
             app:egInnerValueUnit="%"
             app:egInnerPadding="95"
