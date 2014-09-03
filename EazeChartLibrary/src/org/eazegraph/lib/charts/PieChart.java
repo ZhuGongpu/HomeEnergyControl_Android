@@ -54,6 +54,7 @@ import android.content.res.TypedArray;
 import android.graphics.*;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.widget.Scroller;
@@ -86,7 +87,10 @@ public class PieChart extends BaseChart {
     public static final boolean DEF_AUTO_CENTER = true;
     public static final boolean DEF_DRAW_VALUE_IN_PIE = true;
     public static final float DEF_VALUE_TEXT_SIZE = 14.f;
-    public static final int DEF_VALUE_TEXT_COLOR = 0xFF898989;
+    public static final int DEF_VALUE_TEXT_COLOR = 0x2D99D4;
+    public static final int DEF_DIVIDER_LINE_COLOR = 0x949494;//0xD3D3D3;
+    public static final int DEF_LABEL_TEXT_COLOR = 0x7B7B81;
+    public static final int DEF_LOWER_VALUE_TEXT_COLOR = 0x66CBCD;
     public static final boolean DEF_USE_CUSTOM_INNER_VALUE = false;
     public static final boolean DEF_OPEN_CLOCKWISE = true;
     public static final int DEF_INNER_PADDING_COLOR = 0xFFF3F3F3; // Holo light background
@@ -100,22 +104,25 @@ public class PieChart extends BaseChart {
     private List<PieModel> mPieData;
     private Paint mGraphPaint;
 
-    private Paint mValuePaint;//TODO 用于显示圈内内容
+    private Paint upperLabelValuePaint = null;// 用于显示圈内上半部分的值
+    private Paint upperLabelTextPaint = null;//用于显示圈内上部文本
+    private Paint dividerLinePaint = null;//用于显示分割线
+    private Paint lowerLabelTextPaint = null;//用于显示圈内下部文本
+
     private RectF mGraphBounds;
     private RectF mInnerBounds;
     private RectF mInnerOutlineBounds;
     // Inner Value stuff
     private Rect mValueTextBounds = new Rect();
-    // Legend stuff
-    private float mIndicatorSize = Utils.dpToPx(8);
-    private float mIndicatorTopMargin = Utils.dpToPx(6);
-    private float mIndicatorBottomMargin = Utils.dpToPx(4);
+
     private Path mTriangle;
-    private Rect mTextBounds = new Rect();
+
     private float mPieDiameter;
     private float mPieRadius;
     private float mTotalValue;
-    private String mInnerValueString = "";
+    private String upperLabelText = "本月消费";
+    private String lowerLabelValue = "0.00";
+    private String mInnerValueString = "0.00";
     // Attributes -----------------------------------------------------
     private boolean mUseInnerPadding;
     private float mInnerPadding;
@@ -126,7 +133,11 @@ public class PieChart extends BaseChart {
     private boolean mUsePieRotation;
     private boolean mDrawValueInPie;
     private float mValueTextSize;
+    private float mUpperLabelTextSize;
+    private float mLowerLabelTextSize;
     private int mValueTextColor;
+    private int mLabelTextColor;
+    private int mDividerLineColor;
     private boolean mUseCustomInnerValue;
     private boolean mOpenClockwise;
     private String mInnerValueUnit;
@@ -163,7 +174,11 @@ public class PieChart extends BaseChart {
         mAutoCenterInSlice = DEF_AUTO_CENTER;
         mDrawValueInPie = DEF_DRAW_VALUE_IN_PIE;
         mValueTextSize = Utils.dpToPx(DEF_VALUE_TEXT_SIZE);
+        mUpperLabelTextSize = Utils.dpToPx(DEF_VALUE_TEXT_SIZE / 2);
+        mLowerLabelTextSize = Utils.dpToPx(DEF_VALUE_TEXT_SIZE / 3);
         mValueTextColor = DEF_VALUE_TEXT_COLOR;
+        mLabelTextColor = DEF_LABEL_TEXT_COLOR;
+        mDividerLineColor = DEF_DIVIDER_LINE_COLOR;
         mUseCustomInnerValue = DEF_USE_CUSTOM_INNER_VALUE;
         mOpenClockwise = DEF_OPEN_CLOCKWISE;
         mInnerPaddingColor = DEF_INNER_PADDING_COLOR;
@@ -171,6 +186,11 @@ public class PieChart extends BaseChart {
 
         initializeGraph();
     }
+
+
+    //##############################################################################################
+    // Variables
+    //##############################################################################################
 
     /**
      * Constructor that is called when inflating a view from XML. This is called
@@ -197,7 +217,6 @@ public class PieChart extends BaseChart {
         );
 
         try {
-
             mUseInnerPadding = a.getBoolean(R.styleable.PieChart_egUseInnerPadding, DEF_USE_INNER_PADDING);
             mInnerPadding = a.getFloat(R.styleable.PieChart_egInnerPadding, DEF_INNER_PADDING);
             mInnerPaddingOutline = a.getFloat(R.styleable.PieChart_egInnerPaddingOutline, DEF_INNER_PADDING_OUTLINE);
@@ -206,11 +225,16 @@ public class PieChart extends BaseChart {
             mAutoCenterInSlice = a.getBoolean(R.styleable.PieChart_egAutoCenter, DEF_AUTO_CENTER);
             mDrawValueInPie = a.getBoolean(R.styleable.PieChart_egDrawValueInPie, DEF_DRAW_VALUE_IN_PIE);
             mValueTextSize = a.getDimension(R.styleable.PieChart_egValueTextSize, Utils.dpToPx(DEF_VALUE_TEXT_SIZE));
+            mUpperLabelTextSize = a.getDimension(R.styleable.PieChart_egUpperLabelTextSize, Utils.dpToPx(DEF_VALUE_TEXT_SIZE / 2));
+            mLowerLabelTextSize = a.getDimension(R.styleable.PieChart_egLowerLabelTextSize, Utils.dpToPx(DEF_VALUE_TEXT_SIZE / 3));
             mValueTextColor = a.getColor(R.styleable.PieChart_egValueTextColor, DEF_VALUE_TEXT_COLOR);
             mUseCustomInnerValue = a.getBoolean(R.styleable.PieChart_egUseCustomInnerValue, DEF_USE_CUSTOM_INNER_VALUE);
             mOpenClockwise = a.getBoolean(R.styleable.PieChart_egOpenClockwise, DEF_OPEN_CLOCKWISE);
             mInnerPaddingColor = a.getColor(R.styleable.PieChart_egInnerPaddingColor, DEF_INNER_PADDING_COLOR);
             mInnerValueUnit = a.getString(R.styleable.PieChart_egInnerValueUnit);
+
+            mLabelTextColor = a.getColor(R.styleable.PieChart_egLabelTextColor, DEF_LABEL_TEXT_COLOR);
+            mDividerLineColor = a.getColor(R.styleable.PieChart_egDividerLineColor, DEF_DIVIDER_LINE_COLOR);
 
         } finally {
             // release the TypedArray so that it can be reused.
@@ -237,11 +261,6 @@ public class PieChart extends BaseChart {
     public boolean isUseInnerPadding() {
         return mUseInnerPadding;
     }
-
-
-    //##############################################################################################
-    // Variables
-    //##############################################################################################
 
     /**
      * Sets the InnerPadding. If the InnerPadding should be used, a complete recalculation is initiated.
@@ -679,10 +698,25 @@ public class PieChart extends BaseChart {
 
         mGraphPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-        mValuePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mValuePaint.setTextSize(mValueTextSize);
-        mValuePaint.setColor(mValueTextColor);
-        mValuePaint.setStyle(Paint.Style.FILL);
+        upperLabelValuePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        upperLabelValuePaint.setTextSize(mValueTextSize);
+        upperLabelValuePaint.setColor(mValueTextColor);
+        upperLabelValuePaint.setStyle(Paint.Style.FILL);
+
+        upperLabelTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        upperLabelTextPaint.setTextSize(mUpperLabelTextSize);
+        upperLabelTextPaint.setColor(mLabelTextColor);
+        upperLabelTextPaint.setStyle(Paint.Style.FILL);
+
+        dividerLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        dividerLinePaint.setColor(mDividerLineColor);
+        dividerLinePaint.setStyle(Paint.Style.FILL);
+
+
+        lowerLabelTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        lowerLabelTextPaint.setTextSize(mLowerLabelTextSize);
+        lowerLabelTextPaint.setColor(mLabelTextColor);
+        lowerLabelTextPaint.setStyle(Paint.Style.FILL);
 
         mGraph.rotateTo(mPieRotation);
         mGraph.decelerate();
@@ -843,6 +877,7 @@ public class PieChart extends BaseChart {
             }
         }
     }
+    // END - Attributes -----------------------------------------------
 
     private void tickScrollAnimation() {
         if (mUsePieRotation)
@@ -875,7 +910,6 @@ public class PieChart extends BaseChart {
             mGraph.decelerate();
         }
     }
-    // END - Attributes -----------------------------------------------
 
     /**
      * Kicks off an animation that will result in the pointer being centered in the
@@ -985,28 +1019,65 @@ public class PieChart extends BaseChart {
         }
     }
 
+    public void setUpperLabelText(String upperLabelText) {
+        this.upperLabelText = upperLabelText;
+    }
+
+    private void setLowerLabelValue(String lowerLabelValue) {
+        this.lowerLabelValue = lowerLabelValue;
+    }
+
+    private String getLowerLabelText() {
+        return "上月" + this.lowerLabelValue + "元";
+    }
+
     @Override
-    protected void onGraphOverlayDraw(Canvas _Canvas) {
-        super.onGraphOverlayDraw(_Canvas);
+    protected void onGraphOverlayDraw(Canvas canvas) {
+        super.onGraphOverlayDraw(canvas);
 
-        if (!mPieData.isEmpty() && mDrawValueInPie) {
-            PieModel model = mPieData.get(mCurrentItem);
+        //显示上部值
+        upperLabelValuePaint.getTextBounds(mInnerValueString, 0, mInnerValueString.length(), mValueTextBounds);
+        float upperValueTextBaseLinePaddingCenterY = (mValueTextBounds.height() / 3);
+        canvas.drawText(
+                mInnerValueString,
+                mInnerBounds.centerX() - (mValueTextBounds.width() / 2),
+                mInnerBounds.centerY() + upperValueTextBaseLinePaddingCenterY,
+                upperLabelValuePaint
+        );
 
-            if (!mUseCustomInnerValue) {
-                mInnerValueString = Utils.getFloatString(model.getValue(), mShowDecimal);
-                if (mInnerValueUnit != null && mInnerValueUnit.length() > 0) {
-                    mInnerValueString += " " + mInnerValueUnit;
-                }
-            }
-            //TODO 修改布局
-            mValuePaint.getTextBounds(mInnerValueString, 0, mInnerValueString.length(), mValueTextBounds);
-            _Canvas.drawText(
-                    mInnerValueString,
-                    mInnerBounds.centerX() - (mValueTextBounds.width() / 2),
-                    mInnerBounds.centerY() + (mValueTextBounds.height() / 2),
-                    mValuePaint
-            );
-        }
+        //显示上部标签
+        Rect upperLabelBounds = new Rect();
+        upperLabelTextPaint.getTextBounds(upperLabelText, 0, upperLabelText.length(), upperLabelBounds);
+        float upperLabelBaselinePaddingCenterY =  - mValueTextBounds.height();
+        canvas.drawText(
+                upperLabelText,
+                mInnerBounds.centerX() - upperLabelBounds.width() / 2,
+                mInnerBounds.centerY() + upperLabelBaselinePaddingCenterY,
+                upperLabelTextPaint
+        );
+
+        //画线
+        float gap = upperValueTextBaseLinePaddingCenterY;//分割线和上下标签的垂直间距
+        float dividerLinePaddingCenterY = upperValueTextBaseLinePaddingCenterY + gap;
+
+        canvas.drawLine(
+                mInnerBounds.centerX() - mInnerBounds.width() / 3,
+                mInnerBounds.centerY() + dividerLinePaddingCenterY,
+                mInnerBounds.centerX() + mInnerBounds.width() / 3,
+                mInnerBounds.centerY() + dividerLinePaddingCenterY,
+                dividerLinePaint
+        );
+
+        //显示下部标签
+        String lowerLabelText = this.getLowerLabelText();
+        Rect lowerLabelBounds = new Rect();
+        lowerLabelTextPaint.getTextBounds(lowerLabelText, 0, lowerLabelText.length(), lowerLabelBounds);
+        float lowerLabelTextBaselinePaddingCenterY = lowerLabelBounds.height() + dividerLinePaddingCenterY + gap;
+        canvas.drawText(lowerLabelText,
+                mInnerBounds.centerX() - lowerLabelBounds.width() / 2,
+                mInnerBounds.centerY() + lowerLabelTextBaselinePaddingCenterY,
+                lowerLabelTextPaint
+        );
     }
 
     @Override
@@ -1049,13 +1120,7 @@ public class PieChart extends BaseChart {
 
     @Override
     protected void onLegendSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onLegendSizeChanged(w, h, oldw, oldh);
 
-        mTriangle = new Path();
-        mTriangle.moveTo((w / 2) - mIndicatorSize, mIndicatorSize * 2 + mIndicatorTopMargin);
-        mTriangle.lineTo((w / 2) + mIndicatorSize, mIndicatorSize * 2 + mIndicatorTopMargin);
-        mTriangle.lineTo(w / 2, mIndicatorTopMargin);
-        mTriangle.lineTo((w / 2) - mIndicatorSize, mIndicatorSize * 2 + mIndicatorTopMargin);
 
     }
 

@@ -173,7 +173,7 @@ public class ValueLineChart extends BaseChart {
      * @param context The Context the view is running in, through which it can
      *                access the current theme, resources, etc.
      * @param attrs   The attributes of the XML tag that is inflating the view.
-     * 
+     *
      */
     public ValueLineChart(Context context, AttributeSet attrs) {
         super(context, attrs);

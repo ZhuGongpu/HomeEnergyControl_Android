@@ -15,17 +15,18 @@
             app:egLegendTextSize="18sp"
             app:egUsePieRotation="true"
             app:egValueTextSize="36sp"
+            app:egUpperLabelTextSize="22sp"
+            app:egLowerLabelTextSize="16sp"
             app:egAutoCenter="false"
             app:egOpenClockwise="false"
             app:egInnerValueUnit="%"
             app:egInnerPadding="95"
             app:egValueTextColor="#ff2c98d4"
-            android:background="@android:color/transparent"/>
-
-    <Button
-
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            app:egDividerLineColor="#949494"
+            app:egLabelTextColor="#7B7B81"
+            android:background="@android:color/transparent"
+            app:egUseCustomInnerValue="true"
+            />
 
 </LinearLayout>
 
