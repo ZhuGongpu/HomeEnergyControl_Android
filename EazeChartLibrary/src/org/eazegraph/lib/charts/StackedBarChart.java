@@ -23,6 +23,11 @@ public class StackedBarChart extends BaseBarChart {
     private List<StackedBarModel> mData;
 
     /**
+     * 记录stack bar中最大值，用于缩放
+     */
+    private float maxStackBarValue = 1;
+
+    /**
      * Simple constructor to use when creating a view from code.
      *
      * @param context The Context the view is running in, through which it can
@@ -60,6 +65,8 @@ public class StackedBarChart extends BaseBarChart {
      */
     public void addBar(StackedBarModel _Bar) {
         mData.add(_Bar);
+        if (_Bar.getSumValue() > maxStackBarValue)
+            maxStackBarValue = _Bar.getSumValue();
         onDataChanged();
     }
 
@@ -70,6 +77,11 @@ public class StackedBarChart extends BaseBarChart {
      */
     public void addBarList(List<StackedBarModel> _List) {
         mData = _List;
+        maxStackBarValue = 1;
+        for (StackedBarModel model : _List) {
+            if (model.getSumValue() > maxStackBarValue)
+                maxStackBarValue = model.getSumValue();
+        }
         onDataChanged();
     }
 
@@ -149,17 +161,12 @@ public class StackedBarChart extends BaseBarChart {
 
         for (StackedBarModel model : mData) {
             float lastHeight = 0;
-            float cumulatedValues = 0;
-
-            for (BarModel barModel : model.getBars()) {
-                cumulatedValues += barModel.getValue();
-            }
 
             last += _Margin / 2;
 
             for (BarModel barModel : model.getBars()) {
                 // calculate height for the StackedBarModel part
-                float height = ((barModel.getValue() * mGraphHeight) / cumulatedValues) + lastHeight;
+                float height = ((barModel.getValue() * mGraphHeight) / maxStackBarValue) + lastHeight;// 高度需要比例缩放:当前总高度除以最大值
                 barModel.setBarBounds(new RectF(last, lastHeight, last + _Width, height));
                 lastHeight = height;
             }

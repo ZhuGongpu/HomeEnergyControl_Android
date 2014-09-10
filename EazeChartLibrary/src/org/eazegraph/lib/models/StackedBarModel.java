@@ -33,6 +33,8 @@ public class StackedBarModel extends BaseModel {
      */
     List<BarModel> mBars;
 
+    private float sumValue = 0;
+
     public StackedBarModel() {
         super("Unset");
         mBars = new ArrayList<BarModel>();
@@ -59,10 +61,15 @@ public class StackedBarModel extends BaseModel {
 
     public void setBars(List<BarModel> _bars) {
         mBars = _bars;
+        sumValue = 0;
+        for (BarModel bar : _bars) {
+            sumValue += bar.getValue();
+        }
     }
 
     public void addBar(BarModel _bar) {
         mBars.add(_bar);
+        sumValue += _bar.getValue();
     }
 
     public RectF getBounds() {
@@ -77,5 +84,9 @@ public class StackedBarModel extends BaseModel {
             );
         }
         return bounds;
+    }
+
+    public float getSumValue() {
+        return sumValue;
     }
 }
