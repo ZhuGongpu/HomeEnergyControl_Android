@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import enn.view.R;
 import org.eazegraph.lib.charts.StackedBarChart;
+import org.eazegraph.lib.communication.IOnBarClickedListener;
 import org.eazegraph.lib.models.BarModel;
 import org.eazegraph.lib.models.StackedBarModel;
 
@@ -23,6 +24,12 @@ public class BillFragment extends Fragment {
         Log.e(TAG, "onCreateView");
         View view = inflater.inflate(R.layout.bill_fragment, container, false);
 
+        demo(view);
+
+        return view;
+    }
+
+    private void demo(View view) {
         StackedBarChart mStackedBarChart = (StackedBarChart) view.findViewById(R.id.stackedbarchart);
 
         StackedBarModel s1 = new StackedBarModel("12.4");
@@ -54,6 +61,11 @@ public class BillFragment extends Fragment {
 
         mStackedBarChart.startAnimation();
 
-        return view;
+        mStackedBarChart.setOnBarClickedListener(new IOnBarClickedListener() {
+            @Override
+            public void onBarClicked(int _Position) {
+                Log.e(TAG, "onBarClicked : " + _Position);
+            }
+        });
     }
 }

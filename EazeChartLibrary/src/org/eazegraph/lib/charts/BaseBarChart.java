@@ -513,7 +513,7 @@ public abstract class BaseBarChart extends BaseChart {
                     BaseBarChart.this.onTouchEvent(_Event);
                 } else {
                     float newX = _Event.getX() + mCurrentViewport.left;
-                    float newY = _Event.getY();
+                    float newY = mCurrentViewport.bottom - _Event.getY();//viewPort.bottom为坐标轴，viewPort.bottom-event.getY()之后可以和stackBar的rect进行判断
                     int counter = 0;
 
                     for (RectF rectF : getBarBounds()) {
