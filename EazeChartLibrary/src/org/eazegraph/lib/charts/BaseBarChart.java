@@ -208,6 +208,10 @@ public abstract class BaseBarChart extends BaseChart {
         onDataChanged();
     }
 
+    // ---------------------------------------------------------------------------------------------
+    //                          Override methods from view layers
+    // ---------------------------------------------------------------------------------------------
+
     /**
      * Checks if the bars have a fixed width or is dynamically calculated.
      *
@@ -216,10 +220,6 @@ public abstract class BaseBarChart extends BaseChart {
     public boolean isFixedBarWidth() {
         return mFixedBarWidth;
     }
-
-    // ---------------------------------------------------------------------------------------------
-    //                          Override methods from view layers
-    // ---------------------------------------------------------------------------------------------
 
     /**
      * Sets if the bar width should be fixed or dynamically caluclated
@@ -240,6 +240,12 @@ public abstract class BaseBarChart extends BaseChart {
         return mBarMargin;
     }
 
+    //endregion
+
+    //##############################################################################################
+    // Variables
+    //##############################################################################################
+
     /**
      * Sets the bar margin.
      *
@@ -249,12 +255,6 @@ public abstract class BaseBarChart extends BaseChart {
         mBarMargin = _barMargin;
         onDataChanged();
     }
-
-    //endregion
-
-    //##############################################################################################
-    // Variables
-    //##############################################################################################
 
     public boolean isScrollEnabled() {
         return mScrollEnabled;
@@ -518,6 +518,7 @@ public abstract class BaseBarChart extends BaseChart {
 
                     for (RectF rectF : getBarBounds()) {
                         if (Utils.intersectsPointWithRectF(rectF, newX, newY)) {
+                            setBarSelected(counter);
                             mListener.onBarClicked(counter);
                             break; // no need to check other bars
                         }
@@ -530,4 +531,11 @@ public abstract class BaseBarChart extends BaseChart {
         return result;
     }
 
+    /**
+     * 使bar处于选中状态
+     *
+     * @param barIndex
+     */
+    public void setBarSelected(int barIndex) {
+    }
 }

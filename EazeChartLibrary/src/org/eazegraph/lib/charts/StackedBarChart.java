@@ -26,6 +26,7 @@ public class StackedBarChart extends BaseBarChart {
      * 记录stack bar中最大值，用于缩放
      */
     private float maxStackBarValue = 1;
+    private int selectedBarIndex = -1;
 
     /**
      * Simple constructor to use when creating a view from code.
@@ -149,6 +150,10 @@ public class StackedBarChart extends BaseBarChart {
         super.onDataChanged();
     }
 
+    //##############################################################################################
+    // Variables
+    //##############################################################################################
+
     /**
      * Calculates the bar boundaries based on the bar width and bar margin.
      *
@@ -184,31 +189,40 @@ public class StackedBarChart extends BaseBarChart {
      * @param _Canvas The canvas object of the graph view.
      */
     protected void drawBars(Canvas _Canvas) {
+        int index = 0;
         for (StackedBarModel model : mData) {
             float lastTop;
             float lastBottom = mGraphHeight;
 
+            RectF bounds = model.getBounds();
+            float left = bounds.left;
+            float right = bounds.right;
+
+            if (index == selectedBarIndex) {
+                float strokeWidth = bounds.width() / 5;
+                left -= strokeWidth;
+                right += strokeWidth;
+            }
+
             for (BarModel barModel : model.getBars()) {
-                RectF bounds = barModel.getBarBounds();
                 mGraphPaint.setColor(barModel.getColor());
 
-                float height = (bounds.height() * mRevealValue);
+                float height = (barModel.getBarBounds().height() * mRevealValue);
                 lastTop = lastBottom - height;
 
                 _Canvas.drawRect(
-                        bounds.left,
+                        left,
                         lastTop,
-                        bounds.right,
+                        right,
                         lastBottom,
                         mGraphPaint);
+
                 lastBottom = lastTop;
             }
+
+            index++;
         }
     }
-
-    //##############################################################################################
-    // Variables
-    //##############################################################################################
 
     /**
      * Returns the list of data sets which hold the information about the legend boundaries and text.
@@ -227,6 +241,12 @@ public class StackedBarChart extends BaseBarChart {
             bounds.add(model.getBounds());
         }
         return bounds;
+    }
+
+    @Override
+    public void setBarSelected(int barIndex) {
+        this.selectedBarIndex = barIndex;
+        invalidate();
     }
 
 }
