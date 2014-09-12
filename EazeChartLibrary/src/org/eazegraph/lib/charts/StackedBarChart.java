@@ -68,6 +68,7 @@ public class StackedBarChart extends BaseBarChart {
         mData.add(_Bar);
         if (_Bar.getSumValue() > maxStackBarValue)
             maxStackBarValue = _Bar.getSumValue();
+        setBarSelected(mData.size() - 1);
         onDataChanged();
     }
 
@@ -83,6 +84,7 @@ public class StackedBarChart extends BaseBarChart {
             if (model.getSumValue() > maxStackBarValue)
                 maxStackBarValue = model.getSumValue();
         }
+        setBarSelected(mData.size() - 1);
         onDataChanged();
     }
 
