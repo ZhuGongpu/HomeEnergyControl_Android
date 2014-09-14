@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import enn.view.R;
 import org.eazegraph.lib.charts.PieChart;
 import org.eazegraph.lib.communication.IOnItemFocusChangedListener;
@@ -29,6 +30,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadData() {
+        //TODO load data
         pieChart.addPieSlice(new PieModel("Gas", 15, Color.argb(255, 248, 174, 50)));
         pieChart.addPieSlice(new PieModel("Electricity", 25, Color.argb(255, 46, 153, 212)));
         pieChart.addPieSlice(new PieModel("Heat", 35, Color.argb(255, 229, 39, 42)));
@@ -40,5 +42,45 @@ public class HomeFragment extends Fragment {
 //                Log.d("PieChart", "Position: " + _Position);
             }
         });
+    }
+
+    private void setGasUsage(String gas_usage) {
+        ((TextView) getActivity().findViewById(R.id.home_fragment_gas_usage)).setText(gas_usage);
+    }
+
+    private void setGasMoney(String gas_money) {
+        ((TextView) getActivity().findViewById(R.id.home_fragment_gas_money)).setText(gas_money);
+    }
+
+    private void setElectricityUsage(String electricity_usage) {
+        ((TextView) getActivity().findViewById(R.id.home_fragment_electricity_usage)).setText(electricity_usage);
+    }
+
+    private void setElecetricityMoney(String elecetricity_money) {
+        ((TextView) getActivity().findViewById(R.id.home_fragment_electricity_money)).setText(elecetricity_money);
+    }
+
+    private void setHeatUsage(String heat_usage) {
+        ((TextView) getActivity().findViewById(R.id.home_fragment_heat_usage)).setText(heat_usage);
+    }
+
+    private void setHeatMoney(String heat_money) {
+        ((TextView) getActivity().findViewById(R.id.home_fragment_heat_money)).setText(heat_money);
+    }
+
+    private void setWaterUsage(String water_usage) {
+        ((TextView) getActivity().findViewById(R.id.home_fragment_water_usage)).setText(water_usage);
+    }
+
+    private void setWaterMoney(String water_money) {
+        ((TextView) getActivity().findViewById(R.id.home_fragment_water_money)).setText(water_money);
+    }
+
+    private void setCurrentMonthMoney(String money) {
+        this.pieChart.setUpperLabelText(money);
+    }
+
+    private void setLastMonthMoney(String money) {
+        this.pieChart.setLowerLabelValue(money);
     }
 }
