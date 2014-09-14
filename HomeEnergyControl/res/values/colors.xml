@@ -2,4 +2,9 @@
 <resources>
     <color name="text_color_blue">#ff2d99d4</color>
     <color name="text_color_default">#ff949699</color>
+
+    <color name="gas_color">#fff8ac32</color>
+    <color name="electricity_color">#ff2d99d4</color>
+    <color name="heat_color">#ffe5272a</color>
+    <color name="water_color">#ff66cbcd</color>
 </resources>
