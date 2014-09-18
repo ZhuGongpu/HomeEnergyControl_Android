@@ -2,5 +2,6 @@
 <resources>
     <dimen name="label_text_extreme_large_size">40sp</dimen>
     <dimen name="label_text_large_size">25sp</dimen>
+    <dimen name="label_text_medium_size">21sp</dimen>
     <dimen name="label_text_small_size">18sp</dimen>
 </resources>

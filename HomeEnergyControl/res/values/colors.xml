@@ -5,7 +5,7 @@
     
     <color name="text_color_blue">#ff2d99d4</color>
     <color name="text_color_default">#ff949699</color>
-    <color name="text_color_black">#000</color>
+    <color name="text_color_black">#ff343434</color>
     <color name="text_color_green">#ff5dc695</color>
 
     <color name="gas_color">#fff8ac32</color>

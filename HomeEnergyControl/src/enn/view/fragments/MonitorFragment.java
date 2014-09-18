@@ -42,7 +42,16 @@ public class MonitorFragment extends Fragment {
         //TODO 向服务器请求各标签数据
 
         //TODO 向服务器请求设备列表
+
         //dummy implementation
+        devices.add(new DeviceEntity(""));
+        devices.add(new DeviceEntity(""));
+        devices.add(new DeviceEntity(""));
+        devices.add(new DeviceEntity(""));
+        devices.add(new DeviceEntity(""));
+        devices.add(new DeviceEntity(""));
+        devices.add(new DeviceEntity(""));
+        devices.add(new DeviceEntity(""));
         devices.add(new DeviceEntity(""));
         devices.add(new DeviceEntity(""));
         devices.add(new DeviceEntity(""));
@@ -96,13 +105,23 @@ public class MonitorFragment extends Fragment {
             //设置设备状态
             SwitchButton switchButton = (SwitchButton) view.findViewById(R.id.device_status_switch);
             switchButton.setChecked(devices.get(i).isInUse());
+            final View finalView = view;
             switchButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                     Log.e(TAG, b + " at " + i);
-                    devices.get(i).setInUse(b);//TODO status changed 写成i可能不合适
+                    devices.get(i).setInUse(b);
+                    if (b) {
+                        finalView.findViewById(R.id.device_energy_consumption_layout).setVisibility(View.VISIBLE);
+                        //设置设备能耗数据
+                        ((TextView) finalView.findViewById(R.id.device_energy_consumption_real_time)).setText(devices
+                                .get(i).getEnergyConsumptionRealTime());
+                    } else {
+                        finalView.findViewById(R.id.device_energy_consumption_layout).setVisibility(View.INVISIBLE);
+                    }
                 }
             });
+
 
             return view;
         }

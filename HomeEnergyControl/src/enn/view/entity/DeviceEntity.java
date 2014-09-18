@@ -66,7 +66,10 @@ public class DeviceEntity {
      * @return
      */
     public String getEnergyConsumptionRealTime() {
-        return this.energy_consumption_real_time;//TODO 向服务器请求实时数据
+        if (isInUse)
+            return this.energy_consumption_real_time;//TODO 向服务器请求实时数据
+        else
+            return "0";
     }
 
     /**
