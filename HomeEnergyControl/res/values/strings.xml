@@ -10,7 +10,26 @@
     <!--Label-->
     <string name="money_unit">元</string>
     <string name="gas_unit">方</string>
+    <string name="gas_unit_real_time">方/小时</string>
     <string name="electricity_unit">度</string>
-    <string name="heat_unit">kWh</string>
+    <string name="electricity_unit_real_time">度/小时</string>
+    <string name="heat_unit">千瓦</string>
+    <string name="heat_unit_real_time">千瓦/小时</string>
     <string name="water_unit">吨</string>
+    <string name="water_unit_real_time">吨/小时</string>
+    <string name="kw_per_hour">kW/h</string>
+
+    <string name="indoor">室内</string>
+    <string name="device">设备</string>
+    <string name="device_status">状态</string>
+    <string name="energy_consumption">能耗</string>
+
+    <!--device names-->
+    <string name="unknown_device">未知</string>
+    <string name="ac">空调</string>
+    <string name="tv">电视</string>
+    <string name="water_heater">热水器</string>
+    <string name="fridge">冰箱</string>
+    <string name="stereo">音响</string>
+    <string name="washing_machine">洗衣机</string>
 </resources>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/main_background_color"
+              android:gravity="center_vertical"
+        >
+
+    <LinearLayout
+            android:layout_weight="0.8"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content">
+
+        <ImageView
+                android:id="@+id/device_icon"
+                android:src="@drawable/tv"
+                android:padding="3dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:scaleType="fitCenter"/>
+
+        <TextView
+                android:padding="2dp"
+                android:gravity="center"
+                android:id="@+id/device_name"
+                android:text="电视"
+                android:textColor="@color/text_color_black"
+                android:textSize="@dimen/label_text_small_size"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+            android:paddingLeft="5dp"
+            android:layout_weight="0.8"
+            android:layout_width="0dp"
+            android:layout_height="match_parent">
+
+        <enn.view.widgets.SwitchButton
+                android:id="@+id/device_status_switch"
+                android:layout_gravity="center_vertical"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="10dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+            android:paddingLeft="5dp"
+            android:layout_weight="0.8"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content">
+
+        <TextView
+                android:id="@+id/device_energy_consumption_real_time"
+                android:text="0.8"
+                android:textSize="@dimen/label_text_small_size"
+                android:textColor="@color/text_color_black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        <TextView
+                android:text="@string/kw_per_hour"
+                android:textSize="@dimen/label_text_small_size"
+                android:textColor="@color/text_color_black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+</LinearLayout>

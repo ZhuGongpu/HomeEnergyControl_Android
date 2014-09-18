@@ -4,6 +4,292 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="#ff13ff3f">
+              android:background="@color/main_background_color">
 
+    <!--title-->
+    <LinearLayout
+            android:padding="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <TextView
+                android:layout_weight="1"
+                android:padding="2dp"
+                android:text="@string/tab_monitor"
+                android:textColor="@color/text_color_black"
+                android:textSize="@dimen/label_text_extreme_large_size"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+
+        <LinearLayout
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+
+            <TextView
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/indoor"
+                    android:textSize="@dimen/label_text_large_size"
+                    android:padding="4dp"
+                    android:textColor="@color/text_color_black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            <TextView
+                    android:id="@+id/monitor_fragment_indoor_temperature"
+                    android:text="25°C"
+                    android:textSize="@dimen/label_text_large_size"
+                    android:padding="4dp"
+                    android:textColor="@color/text_color_blue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            <TextView
+                    android:id="@+id/monitor_fragment_relative_humidity"
+                    android:text="60%"
+                    android:padding="4dp"
+                    android:textSize="@dimen/label_text_large_size"
+                    android:textColor="@color/text_color_green"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            <TextView
+                    android:id="@+id/monitor_fragment_air_quality"
+                    android:text="良"
+                    android:textSize="@dimen/label_text_large_size"
+                    android:padding="4dp"
+                    android:textColor="@color/text_color_green"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!--divider-->
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"
+            />
+
+    <!--info-->
+    <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="true">
+
+        <LinearLayout
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
+
+            <ImageView
+                    android:src="@drawable/gas"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"/>
+
+            <TextView
+                    android:id="@+id/monitor_fragment_gas_usage_real_time"
+                    android:text="0.32"
+                    android:textColor="@color/text_color_black"
+                    android:padding="2dp"
+                    android:textSize="@dimen/label_text_large_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            <TextView
+                    android:gravity="center"
+                    android:text="@string/gas_unit_real_time"
+                    android:textColor="@color/text_color_black"
+                    android:textSize="@dimen/label_text_small_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:layout_weight="1"
+                android:paddingLeft="1dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
+
+            <ImageView
+                    android:src="@drawable/electricity"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"/>
+
+            <TextView
+                    android:id="@+id/monitor_fragment_electricity_usage_real_time"
+                    android:text="0.32"
+                    android:textColor="@color/text_color_black"
+                    android:padding="2dp"
+                    android:textSize="@dimen/label_text_large_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            <TextView
+                    android:gravity="center"
+                    android:text="@string/electricity_unit_real_time"
+                    android:textColor="@color/text_color_black"
+                    android:textSize="@dimen/label_text_small_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:padding="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="true">
+
+        <LinearLayout
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
+
+            <ImageView
+                    android:src="@drawable/heat"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"/>
+
+            <TextView
+                    android:id="@+id/monitor_fragment_heat_usage_real_time"
+                    android:text="0.32"
+                    android:textColor="@color/text_color_black"
+                    android:padding="2dp"
+                    android:textSize="@dimen/label_text_large_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            <TextView
+                    android:gravity="center"
+                    android:text="@string/heat_unit_real_time"
+                    android:textColor="@color/text_color_black"
+                    android:textSize="@dimen/label_text_small_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:layout_weight="1"
+                android:paddingLeft="1dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
+
+            <ImageView
+                    android:src="@drawable/water"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"/>
+
+            <TextView
+                    android:id="@+id/monitor_fragment_water_usage_real_time"
+                    android:text="0.32"
+                    android:textColor="@color/text_color_black"
+                    android:padding="2dp"
+                    android:textSize="@dimen/label_text_large_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            <TextView
+                    android:gravity="center"
+                    android:text="@string/water_unit_real_time"
+                    android:textColor="@color/text_color_black"
+                    android:textSize="@dimen/label_text_small_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <!--list header-->
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp">
+
+        <RelativeLayout
+                android:layout_weight="0.8"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content">
+
+            <TextView
+                    android:id="@+id/device_text_view"
+                    android:text="@string/device"
+                    android:textSize="@dimen/label_text_large_size"
+                    android:textColor="@color/text_color_black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            <!--divider-->
+            <View
+                    android:layout_below="@id/device_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="?android:attr/listDivider"
+                    />
+        </RelativeLayout>
+
+        <RelativeLayout
+                android:paddingLeft="5dp"
+                android:layout_weight="0.8"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content">
+
+            <TextView
+                    android:id="@+id/device_status_text_view"
+                    android:text="@string/device_status"
+                    android:textSize="@dimen/label_text_large_size"
+                    android:textColor="@color/text_color_black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            <!--divider-->
+            <View
+                    android:layout_below="@id/device_status_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="?android:attr/listDivider"
+                    />
+        </RelativeLayout>
+
+        <RelativeLayout
+                android:paddingLeft="5dp"
+                android:layout_weight="0.8"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content">
+
+            <TextView
+                    android:id="@+id/energy_consumption_text_view"
+                    android:text="@string/energy_consumption"
+                    android:textSize="@dimen/label_text_large_size"
+                    android:textColor="@color/text_color_black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            <!--divider-->
+            <View
+                    android:layout_below="@id/energy_consumption_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="?android:attr/listDivider"
+                    />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <ListView
+            android:id="@+id/device_list"
+            android:padding="5dp"
+            android:divider="@null"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 </LinearLayout>
