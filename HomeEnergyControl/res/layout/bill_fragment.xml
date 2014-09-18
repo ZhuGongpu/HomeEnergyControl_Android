@@ -3,71 +3,268 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               style="@style/match_parent_layout"
-              android:background="@color/primary_background_color"
-        >
-
-    <!--title-->
-    <TextView
-            android:text="账单"
-            style="@style/headline_text"/>
-    <!--divider-->
-    <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="?android:attr/listDivider"
-            />
-
-    <org.eazegraph.lib.charts.StackedBarChart
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:layout_weight="1.3"
-            android:id="@+id/stackedbarchart"
-            style="@style/match_parent_layout"
-            android:padding="10dp"
-            app:egFixedBarWidth="true"
-            app:egBarWidth="20dp"
-            app:egLegendHeight="40dp"/>
-
+              android:background="@color/primary_background_color">
 
     <LinearLayout
             android:layout_weight="1"
             android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <!--title-->
+        <TextView
+                android:text="账单"
+                style="@style/headline_text"/>
+        <!--divider-->
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"/>
+
+        <org.eazegraph.lib.charts.StackedBarChart
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/stackedbarchart"
+                style="@style/match_parent_layout"
+                android:paddingTop="5dp"
+                app:egFixedBarWidth="true"
+                app:egBarWidth="18dp"
+                app:egLegendHeight="30dp"/>
+    </LinearLayout>
+
+    <ScrollView
+            android:layout_weight="1"
             style="@style/match_parent_layout">
 
         <LinearLayout
-                style="@style/wrap_content_layout">
-
-            <TextView
-                    android:id="@+id/bill_fragment_year"
-                    android:text="2014年"
-                    style="@style/black_medium_text"/>
-
-            <TextView
-                    android:id="@+id/bill_fragment_month"
-                    android:text="05月"
-                    style="@style/green_medium_text"
-                    />
-
-            <TextView
-                    android:text="@string/sum_cost"
-                    style="@style/black_medium_text"/>
-
-            <TextView
-                    android:id="@+id/bill_fragment_sum_cost"
-                    style="@style/green_large_text"
-                    android:padding="2dp"
-                    android:text="218"
-                    />
-
-            <TextView
-                    android:text="@string/money_unit"
-                    style="@style/black_medium_text"/>
-
-        </LinearLayout>
-
-        <LinearLayout
+                android:orientation="vertical"
                 style="@style/match_parent_layout">
 
+            <LinearLayout
+                    style="@style/wrap_content_layout">
 
+                <TextView
+                        android:id="@+id/bill_fragment_year"
+                        android:text="2014年"
+                        style="@style/black_medium_text"/>
+
+                <TextView
+                        android:id="@+id/bill_fragment_month"
+                        android:text="05月"
+                        style="@style/green_medium_text"/>
+
+                <TextView
+                        android:text="@string/sum_cost"
+                        style="@style/black_medium_text"/>
+
+                <TextView
+                        android:id="@+id/bill_fragment_sum_cost"
+                        style="@style/green_large_text"
+                        android:padding="2dp"
+                        android:text="218"/>
+
+                <TextView
+                        android:text="@string/money_unit"
+                        style="@style/black_medium_text"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                <LinearLayout
+                        android:layout_weight="1"
+                        android:padding="10dp"
+                        style="@style/wrap_content_layout">
+
+                    <ImageView
+                            android:layout_gravity="center_vertical|left"
+                            android:layout_marginLeft="10dp"
+                            android:src="@drawable/gas"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                        android:layout_weight="1"
+                        android:layout_gravity="center_vertical"
+                        style="@style/wrap_content_layout">
+
+                    <TextView
+                            android:id="@+id/bill_fragment_gas_money"
+                            android:text="82"
+                            style="@style/black_medium_text"/>
+
+                    <TextView
+                            android:text="@string/money_unit"
+                            style="@style/black_small_text"/>
+                </LinearLayout>
+
+
+                <LinearLayout
+                        android:layout_weight="1"
+                        android:layout_gravity="center_vertical"
+                        style="@style/wrap_content_layout">
+
+                    <TextView
+                            android:id="@+id/bill_fragment_gas_usage"
+                            android:text="32"
+                            style="@style/black_medium_text"/>
+
+                    <TextView
+                            android:text="@string/gas_unit"
+                            style="@style/black_small_text"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                <LinearLayout
+                        android:layout_weight="1"
+                        android:padding="10dp"
+                        style="@style/wrap_content_layout">
+
+                    <ImageView
+                            android:layout_gravity="center_vertical|left"
+                            android:layout_marginLeft="10dp"
+                            android:src="@drawable/electricity"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                        android:layout_weight="1"
+                        android:layout_gravity="center_vertical"
+                        style="@style/wrap_content_layout">
+
+                    <TextView
+                            android:id="@+id/bill_fragment_electricity_money"
+                            android:text="132"
+                            style="@style/black_medium_text"/>
+
+                    <TextView
+                            android:text="@string/money_unit"
+                            style="@style/black_small_text"/>
+                </LinearLayout>
+
+
+                <LinearLayout
+                        android:layout_weight="1"
+                        android:layout_gravity="center_vertical"
+                        style="@style/wrap_content_layout">
+
+                    <TextView
+                            android:id="@+id/bill_fragment_electricity_usage"
+                            android:text="264"
+                            style="@style/black_medium_text"/>
+
+                    <TextView
+                            android:text="@string/electricity_unit"
+                            style="@style/black_small_text"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                <LinearLayout
+                        android:layout_weight="1"
+                        android:padding="10dp"
+                        style="@style/wrap_content_layout">
+
+                    <ImageView
+                            android:layout_gravity="center_vertical|left"
+                            android:layout_marginLeft="10dp"
+                            android:src="@drawable/heat"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                        android:layout_weight="1"
+                        android:layout_gravity="center_vertical"
+                        style="@style/wrap_content_layout">
+
+                    <TextView
+                            android:id="@+id/bill_fragment_heat_money"
+                            android:text="10"
+                            style="@style/black_medium_text"/>
+
+                    <TextView
+                            android:text="@string/money_unit"
+                            style="@style/black_small_text"/>
+                </LinearLayout>
+
+
+                <LinearLayout
+                        android:layout_weight="1"
+                        android:layout_gravity="center_vertical"
+                        style="@style/wrap_content_layout">
+
+                    <TextView
+                            android:id="@+id/bill_fragment_heat_usage"
+                            android:text="12"
+                            style="@style/black_medium_text"/>
+
+                    <TextView
+                            android:text="@string/heat_unit"
+                            style="@style/black_small_text"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                <LinearLayout
+                        android:layout_weight="1"
+                        android:padding="10dp"
+                        style="@style/wrap_content_layout">
+
+                    <ImageView
+                            android:layout_gravity="center_vertical|left"
+                            android:layout_marginLeft="10dp"
+                            android:src="@drawable/water"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                        android:layout_weight="1"
+                        android:layout_gravity="center_vertical"
+                        style="@style/wrap_content_layout">
+
+                    <TextView
+                            android:id="@+id/bill_fragment_water_money"
+                            android:text="121"
+                            style="@style/black_medium_text"/>
+
+                    <TextView
+                            android:text="@string/money_unit"
+                            style="@style/black_small_text"/>
+                </LinearLayout>
+
+                <LinearLayout
+                        android:layout_weight="1"
+                        android:layout_gravity="center_vertical"
+                        style="@style/wrap_content_layout">
+
+                    <TextView
+                            android:id="@+id/bill_fragment_water_usage"
+                            android:text="13"
+                            style="@style/black_medium_text"/>
+
+                    <TextView
+                            android:text="@string/water_unit"
+                            style="@style/black_small_text"/>
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
+    </ScrollView>
 </LinearLayout>
