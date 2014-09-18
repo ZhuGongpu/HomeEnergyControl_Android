@@ -24,6 +24,9 @@
     <string name="device_status">状态</string>
     <string name="energy_consumption">能耗</string>
 
+    <string name="year">年</string>
+    <string name="sum_cost">总消费</string>
+
     <!--device names-->
     <string name="unknown_device">未知</string>
     <string name="ac">空调</string>

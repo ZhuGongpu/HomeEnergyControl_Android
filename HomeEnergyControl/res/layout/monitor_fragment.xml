@@ -4,7 +4,7 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="@color/main_background_color">
+              android:background="@color/primary_background_color">
 
     <!--title-->
     <LinearLayout
@@ -14,12 +14,9 @@
 
         <TextView
                 android:layout_weight="1"
-                android:padding="2dp"
                 android:text="@string/tab_monitor"
-                android:textColor="@color/text_color_black"
-                android:textSize="@dimen/label_text_extreme_large_size"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"/>
+                android:textColor="@color/black"
+                style="@style/headline_text"/>
 
         <LinearLayout
                 android:layout_gravity="center_vertical"
@@ -31,38 +28,22 @@
             <TextView
                     android:layout_gravity="center_vertical"
                     android:text="@string/indoor"
-                    android:textSize="@dimen/label_text_large_size"
-                    android:padding="4dp"
-                    android:textColor="@color/text_color_black"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    style="@style/subhead_text"/>
 
             <TextView
                     android:id="@+id/monitor_fragment_indoor_temperature"
                     android:text="25°C"
-                    android:textSize="@dimen/label_text_large_size"
-                    android:padding="4dp"
-                    android:textColor="@color/text_color_blue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    style="@style/blue_subhead_text"/>
 
             <TextView
                     android:id="@+id/monitor_fragment_relative_humidity"
                     android:text="60%"
-                    android:padding="4dp"
-                    android:textSize="@dimen/label_text_large_size"
-                    android:textColor="@color/text_color_green"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    style="@style/green_subhead_text"/>
 
             <TextView
                     android:id="@+id/monitor_fragment_air_quality"
                     android:text="良"
-                    android:textSize="@dimen/label_text_large_size"
-                    android:padding="4dp"
-                    android:textColor="@color/text_color_green"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    style="@style/green_subhead_text"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -96,19 +77,14 @@
             <TextView
                     android:id="@+id/monitor_fragment_gas_usage_real_time"
                     android:text="0.32"
-                    android:textColor="@color/text_color_black"
                     android:padding="2dp"
-                    android:textSize="@dimen/label_text_medium_size"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    style="@style/black_medium_text"
+                    />
 
             <TextView
                     android:gravity="center"
                     android:text="@string/gas_unit_real_time"
-                    android:textColor="@color/text_color_black"
-                    android:textSize="@dimen/label_text_small_size"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    style="@style/black_small_text"/>
 
         </LinearLayout>
 
@@ -127,19 +103,13 @@
             <TextView
                     android:id="@+id/monitor_fragment_electricity_usage_real_time"
                     android:text="0.32"
-                    android:textColor="@color/text_color_black"
                     android:padding="2dp"
-                    android:textSize="@dimen/label_text_medium_size"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    style="@style/black_medium_text"/>
 
             <TextView
                     android:gravity="center"
                     android:text="@string/electricity_unit_real_time"
-                    android:textColor="@color/text_color_black"
-                    android:textSize="@dimen/label_text_small_size"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    style="@style/black_small_text"/>
 
         </LinearLayout>
     </LinearLayout>
@@ -166,19 +136,13 @@
             <TextView
                     android:id="@+id/monitor_fragment_heat_usage_real_time"
                     android:text="0.32"
-                    android:textColor="@color/text_color_black"
                     android:padding="2dp"
-                    android:textSize="@dimen/label_text_medium_size"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    style="@style/black_medium_text"/>
 
             <TextView
                     android:gravity="center"
                     android:text="@string/heat_unit_real_time"
-                    android:textColor="@color/text_color_black"
-                    android:textSize="@dimen/label_text_small_size"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    style="@style/black_small_text"/>
 
         </LinearLayout>
 
@@ -197,19 +161,13 @@
             <TextView
                     android:id="@+id/monitor_fragment_water_usage_real_time"
                     android:text="0.32"
-                    android:textColor="@color/text_color_black"
                     android:padding="2dp"
-                    android:textSize="@dimen/label_text_medium_size"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    style="@style/black_medium_text"/>
 
             <TextView
                     android:gravity="center"
                     android:text="@string/water_unit_real_time"
-                    android:textColor="@color/text_color_black"
-                    android:textSize="@dimen/label_text_small_size"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    style="@style/black_small_text"/>
 
         </LinearLayout>
     </LinearLayout>
@@ -228,10 +186,7 @@
             <TextView
                     android:id="@+id/device_text_view"
                     android:text="@string/device"
-                    android:textSize="@dimen/label_text_medium_size"
-                    android:textColor="@color/text_color_black"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    style="@style/black_medium_text"/>
             <!--divider-->
             <View
                     android:layout_below="@id/device_text_view"
@@ -250,10 +205,7 @@
             <TextView
                     android:id="@+id/device_status_text_view"
                     android:text="@string/device_status"
-                    android:textSize="@dimen/label_text_medium_size"
-                    android:textColor="@color/text_color_black"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    style="@style/black_medium_text"/>
             <!--divider-->
             <View
                     android:layout_below="@id/device_status_text_view"
@@ -272,10 +224,7 @@
             <TextView
                     android:id="@+id/energy_consumption_text_view"
                     android:text="@string/energy_consumption"
-                    android:textSize="@dimen/label_text_medium_size"
-                    android:textColor="@color/text_color_black"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    style="@style/black_medium_text"/>
             <!--divider-->
             <View
                     android:layout_below="@id/energy_consumption_text_view"

@@ -126,7 +126,7 @@ public class MainActivity extends FragmentActivity {
         }
         if (tabindex >= 0 && tabindex < tabs.size()) {
             findViewById(tabs.get(tabindex)).setSelected(true);
-            ((TextView) findViewById(tabTexts.get(tabindex))).setTextColor(getResources().getColor(R.color.text_color_blue));
+            ((TextView) findViewById(tabTexts.get(tabindex))).setTextColor(getResources().getColor(R.color.blue));
         }
 //        this.viewPager.setCurrentItem(index, true);//平滑过渡
         this.viewPager.setCurrentItem(tabindex);

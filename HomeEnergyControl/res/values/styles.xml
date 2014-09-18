@@ -1,14 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="item">
+
+    <style name="match_parent_layout">
         <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="wrap_content_layout">
+        <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingLeft">30dp</item>
-        <item name="android:paddingTop">8dp</item>
-        <item name="android:paddingRight">30dp</item>
-        <item name="android:paddingBottom">8dp</item>
-        <item name="android:minHeight">52dp</item>
-		<item name="android:drawablePadding">16dp</item>
-	    <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="headline_text" parent="black_extreme_large_text">
+        <item name="android:padding">2dp</item>
+    </style>
+
+    <style name="subhead_text" parent="black_large_text">
+        <item name="android:padding">4dp</item>
+    </style>
+
+    <style name="green_subhead_text" parent="subhead_text">
+        <item name="android:textColor">@color/green</item>
+    </style>
+
+    <style name="blue_subhead_text" parent="subhead_text">
+        <item name="android:textColor">@color/blue</item>
+    </style>
+
+    <style name="green_text" parent="wrap_content_layout">
+        <item name="android:textColor">@color/green</item>
+    </style>
+
+    <style name="yellow_text" parent="wrap_content_layout">
+        <item name="android:textColor">@color/yellow</item>
+    </style>
+
+    <style name="blue_text" parent="wrap_content_layout">
+        <item name="android:textColor">@color/blue</item>
+    </style>
+
+    <style name="red_text" parent="wrap_content_layout">
+        <item name="android:textColor">@color/red</item>
+    </style>
+
+    <style name="black_text" parent="wrap_content_layout">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="default_text" parent="wrap_content_layout">
+        <item name="android:textColor">@color/text_color_default</item>
+    </style>
+
+    <style name="black_small_text" parent="black_text">
+        <item name="android:textSize">@dimen/label_text_small_size</item>
+    </style>
+
+    <style name="black_medium_text" parent="black_text">
+        <item name="android:textSize">@dimen/label_text_medium_size</item>
+    </style>
+
+    <style name="black_large_text" parent="black_text">
+        <item name="android:textSize">@dimen/label_text_large_size</item>
+    </style>
+
+    <style name="black_extreme_large_text" parent="black_text">
+        <item name="android:textSize">@dimen/label_text_extreme_large_size</item>
+    </style>
+
+
+    <style name="green_small_text" parent="green_text">
+        <item name="android:textSize">@dimen/label_text_small_size</item>
+    </style>
+
+    <style name="green_medium_text" parent="green_text">
+        <item name="android:textSize">@dimen/label_text_medium_size</item>
+    </style>
+
+    <style name="green_large_text" parent="green_text">
+        <item name="android:textSize">@dimen/label_text_large_size</item>
+    </style>
+
+
+    <style name="yellow_large_text" parent="yellow_text">
+        <item name="android:textSize">@dimen/label_text_large_size</item>
+    </style>
+
+    <style name="yellow_small_text" parent="yellow_text">
+        <item name="android:textSize">@dimen/label_text_small_size</item>
+    </style>
+
+
+    <style name="blue_large_text" parent="blue_text">
+        <item name="android:textSize">@dimen/label_text_large_size</item>
+    </style>
+
+    <style name="blue_small_text" parent="blue_text">
+        <item name="android:textSize">@dimen/label_text_small_size</item>
+    </style>
+
+
+    <style name="red_large_text" parent="red_text">
+        <item name="android:textSize">@dimen/label_text_large_size</item>
+    </style>
+
+    <style name="red_small_text" parent="red_text">
+        <item name="android:textSize">@dimen/label_text_small_size</item>
+    </style>
+
+
+    <style name="default_large_text" parent="default_text">
+        <item name="android:textSize">@dimen/label_text_large_size</item>
+    </style>
+
+    <style name="default_small_text" parent="default_text">
+        <item name="android:textSize">@dimen/label_text_small_size</item>
+    </style>
+
+    <style name="default_medium_text" parent="default_text">
+        <item name="android:textSize">@dimen/label_text_medium_size</item>
     </style>
 </resources>

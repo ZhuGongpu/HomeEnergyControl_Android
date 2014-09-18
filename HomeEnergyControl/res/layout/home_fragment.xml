@@ -5,6 +5,7 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              android:background="@color/primary_background_color"
         >
 
     <org.eazegraph.lib.charts.PieChart
@@ -37,16 +38,14 @@
             android:layout_marginTop="-60dp">
 
         <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/wrap_content_layout"
                 android:orientation="vertical"
                 android:gravity="center_horizontal"
                 android:layout_weight="1">
 
             <ImageView
                     android:src="@drawable/gas"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    style="@style/wrap_content_layout"/>
 
             <LinearLayout
                     android:orientation="horizontal"
@@ -56,10 +55,7 @@
                 <TextView
                         android:id="@+id/home_fragment_gas_usage"
                         android:text="39"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/gas_color"
-                        android:textSize="@dimen/label_text_large_size"/>
+                        style="@style/yellow_large_text"/>
 
                 <TextView
                         android:text="@string/gas_unit"
@@ -75,10 +71,7 @@
                 <TextView
                         android:id="@+id/home_fragment_gas_money"
                         android:text="25.00"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/gas_color"
-                        android:textSize="@dimen/label_text_small_size"/>
+                        style="@style/yellow_small_text"/>
 
                 <TextView
                         android:layout_width="wrap_content"
@@ -97,8 +90,7 @@
 
             <ImageView
                     android:src="@drawable/electricity"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    style="@style/wrap_content_layout"/>
 
             <LinearLayout
                     android:orientation="horizontal"
@@ -107,34 +99,25 @@
 
                 <TextView
                         android:id="@+id/home_fragment_electricity_usage"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
                         android:text="216"
-                        android:textColor="@color/electricity_color"
-                        android:textSize="@dimen/label_text_large_size"/>
+                        style="@style/blue_large_text"/>
 
                 <TextView
                         android:text="@string/electricity_unit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        style="@style/wrap_content_layout"/>
             </LinearLayout>
 
             <LinearLayout
                     android:orientation="horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    style="@style/wrap_content_layout">
 
                 <TextView
                         android:id="@+id/home_fragment_electricity_money"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
                         android:text="120.00"
-                        android:textColor="@color/electricity_color"
-                        android:textSize="@dimen/label_text_small_size"/>
+                        style="@style/blue_small_text"/>
 
                 <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        style="@style/wrap_content_layout"
                         android:text="@string/money_unit"/>
             </LinearLayout>
 
@@ -154,91 +137,69 @@
 
             <LinearLayout
                     android:orientation="horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    style="@style/wrap_content_layout">
 
                 <TextView
                         android:id="@+id/home_fragment_heat_usage"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
                         android:text="216"
-                        android:textColor="@color/heat_color"
-                        android:textSize="@dimen/label_text_large_size"/>
+                        style="@style/red_large_text"/>
 
                 <TextView
                         android:text="@string/heat_unit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        style="@style/wrap_content_layout"/>
             </LinearLayout>
 
             <LinearLayout
                     android:orientation="horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    style="@style/wrap_content_layout">
 
                 <TextView
                         android:id="@+id/home_fragment_heat_money"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
                         android:text="78.00"
-                        android:textColor="@color/heat_color"
-                        android:textSize="@dimen/label_text_small_size"/>
+                        style="@style/red_small_text"/>
 
                 <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        style="@style/wrap_content_layout"
                         android:text="@string/money_unit"
                         />
             </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/wrap_content_layout"
                 android:orientation="vertical"
                 android:gravity="center_horizontal"
                 android:layout_weight="1">
 
             <ImageView
                     android:src="@drawable/water"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    style="@style/wrap_content_layout"/>
 
             <LinearLayout
                     android:orientation="horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    style="@style/wrap_content_layout">
 
                 <TextView
                         android:id="@+id/home_fragment_water_usage"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
                         android:text="20"
-                        android:textColor="@color/water_color"
-                        android:textSize="@dimen/label_text_large_size"/>
+                        style="@style/green_large_text"/>
 
                 <TextView
                         android:text="@string/water_unit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        style="@style/wrap_content_layout"/>
             </LinearLayout>
 
             <LinearLayout
                     android:orientation="horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    style="@style/wrap_content_layout">
 
                 <TextView
                         android:id="@+id/home_fragment_water_money"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
                         android:text="36.00"
-                        android:textColor="@color/water_color"
-                        android:textSize="@dimen/label_text_small_size"/>
+                        style="@style/green_small_text"/>
 
                 <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        style="@style/wrap_content_layout"
                         android:text="@string/water_unit"
                         />
             </LinearLayout>
@@ -253,8 +214,7 @@
             android:gravity="center_horizontal">
 
         <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/wrap_content_layout"
                 android:orientation="vertical"
                 android:layout_gravity="center_vertical"
                 android:gravity="center|right">
@@ -262,16 +222,12 @@
             <TextView
                     android:id="@+id/home_fragment_date_day"
                     android:text="30"
-                    android:textSize="@dimen/label_text_large_size"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    style="@style/black_large_text"/>
 
             <TextView
                     android:id="@+id/home_fragment_date_year_and_month"
                     android:text="2014/06"
-                    android:textSize="@dimen/label_text_small_size"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    style="@style/black_small_text"/>
         </LinearLayout>
 
         <ImageView
@@ -287,8 +243,7 @@
                 android:id="@+id/home_fragment_l0cation"
                 android:text="廊坊"
                 android:textSize="@dimen/label_text_extreme_large_size"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                style="@style/wrap_content_layout"/>
 
         <LinearLayout
                 android:padding="5dp"
@@ -299,34 +254,24 @@
 
             <LinearLayout
                     android:orientation="horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    style="@style/wrap_content_layout">
 
                 <TextView
                         android:id="@+id/home_fragment_temperature"
                         android:text="30度"
-                        android:textColor="@color/gas_color"
-                        android:textSize="@dimen/label_text_small_size"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        style="@style/yellow_small_text"/>
 
                 <TextView
                         android:id="@+id/home_fragment_humidity"
                         android:text="52%"
-                        android:textSize="@dimen/label_text_small_size"
-                        android:textColor="@color/electricity_color"
-                        android:paddingLeft="10dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:paddingLeft="5dp"
+                        style="@style/yellow_small_text"/>
             </LinearLayout>
 
             <TextView
                     android:id="@+id/home_fragment_air_quality"
                     android:text="轻度污染"
-                    android:textSize="@dimen/label_text_small_size"
-                    android:textColor="@color/water_color"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    style="@style/blue_small_text"/>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
