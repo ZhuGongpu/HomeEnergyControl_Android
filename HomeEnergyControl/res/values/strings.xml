@@ -7,6 +7,11 @@
     <string name="tab_bill">账单</string>
     <string name="tab_query">查询</string>
 
+    <string name="gas">气</string>
+    <string name="electricity">电</string>
+    <string name="heat">热</string>
+    <string name="water">水</string>
+
     <!--Label-->
     <string name="money_unit">元</string>
     <string name="gas_unit">方</string>

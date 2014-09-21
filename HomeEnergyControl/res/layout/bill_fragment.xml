@@ -12,7 +12,7 @@
             android:layout_height="wrap_content">
         <!--title-->
         <TextView
-                android:text="账单"
+                android:text="@string/tab_bill"
                 style="@style/headline_text"/>
         <!--divider-->
         <View
